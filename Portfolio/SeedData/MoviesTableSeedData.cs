@@ -10,7 +10,7 @@ namespace Portfolio.SeedData
     public static class MoviesTableSeedData
     {
         /// <summary>
-        /// 如果DB中，Movies的資料表沒有任何資料，則寫入FirstSeedDataToDB()中預設的資料
+        /// 如果DB中，Movies的資料表沒有任何資料，則寫入FirstSeedDataToMoviesTable()中預設的資料
         /// </summary>
         public static void FirstSeedDataToMoviesTable(IServiceProvider serviceProvider)
         {
@@ -22,6 +22,7 @@ namespace Portfolio.SeedData
                     return;
                 }
 
+                // 若無，則寫入下列四筆資料到DB中
                 context.Movies.AddRange(
                     new Movies {
                         Title = "When Harry Met Sally",
@@ -54,6 +55,8 @@ namespace Portfolio.SeedData
                         Price = 3.99M
                     }
                 );
+
+                //將資料從Model寫回Database
                 context.SaveChanges();
             }
         }

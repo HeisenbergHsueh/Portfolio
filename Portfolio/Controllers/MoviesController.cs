@@ -18,7 +18,12 @@ namespace Portfolio.Controllers
 
         private readonly IServiceProvider _serviceProvider;
 
-        // 建構子
+        /// <summary>
+        /// 建構子 : 當MoviesController被實例化(instances)，就會初始化這個跟class同樣名稱的方法
+        /// 然後將PortfolioContext、IServiceProvider等傳進來的參數，做一個初始化設定
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
         public MoviesController(PortfolioContext context, IServiceProvider serviceProvider)
         {
             _context = context;

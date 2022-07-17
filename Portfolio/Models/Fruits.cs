@@ -7,12 +7,9 @@ using System.Collections.Generic;
 
 namespace Portfolio.Models
 {
-    public partial class Movies
+    public partial class Fruits
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public string Genre { get; set; }
-        public decimal Price { get; set; }
+        public int FruitId { get; set; }
+        public string FruitName { get; set; }
     }
 }

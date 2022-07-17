@@ -58,7 +58,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Movies}/{action=Index}/{id?}");
+                    pattern: "{controller=Checkbox}/{action=Index}/{id?}");
             });
         }
     }
