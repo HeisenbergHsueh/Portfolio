@@ -58,7 +58,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Checkbox}/{action=Index}/{id?}");
+                    pattern: "{controller=LoginSystem}/{action=Register}/{id?}");
             });
         }
     }

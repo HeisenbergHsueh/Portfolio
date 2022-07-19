@@ -23,6 +23,10 @@ namespace Portfolio.Data
         public virtual DbSet<Fruits> Fruits { get; set; }
         public virtual DbSet<Movies> Movies { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Fruits>(entity =>
