@@ -10,5 +10,6 @@ namespace Portfolio.Models.LoginSystem
         public string UserName { get; set; }
         public string UserPassword { get; set; }
         public string UserEmail { get; set; }
+        public string Salt { get; set; }
     }
 }

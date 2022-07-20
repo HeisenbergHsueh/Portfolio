@@ -32,6 +32,9 @@ namespace Portfolio
             //透過 DbContextOptions 物件上的方法，來連結 appsetting.json 中，設定好的 SQL server connection string
             services.AddDbContext<PortfolioContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("HeisenbergHsueh_Portfolio_DB")));
+
+            services.AddDbContext<LoginSystemContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("HeisenbergHsueh_Portfolio_DB")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +61,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=LoginSystem}/{action=Register}/{id?}");
+                    pattern: "{controller=LoginSystem}/{action=Login}/{id?}");
             });
         }
     }
