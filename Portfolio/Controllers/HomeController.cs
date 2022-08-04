@@ -7,6 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+//cookie授權
+using Microsoft.AspNetCore.Authorization;
+
 namespace Portfolio.Controllers
 {
     public class HomeController : Controller
@@ -23,6 +26,7 @@ namespace Portfolio.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

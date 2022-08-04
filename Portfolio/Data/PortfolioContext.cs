@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Portfolio.Models;
+using Portfolio.Models.LoginSystem;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -22,6 +23,7 @@ namespace Portfolio.Data
 
         public virtual DbSet<Fruits> Fruits { get; set; }
         public virtual DbSet<Movies> Movies { get; set; }
+        public virtual DbSet<UserLogin> UserLogin { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,6 +47,33 @@ namespace Portfolio.Data
             modelBuilder.Entity<Movies>(entity =>
             {
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+            });
+
+            modelBuilder.Entity<UserLogin>(entity =>
+            {
+                entity.HasKey(e => e.UserId);
+
+                entity.Property(e => e.UserId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UserPassword)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.UserEmail)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.UserRole)
+                    .IsRequired(false)
+                    .HasMaxLength(300);
             });
 
             OnModelCreatingPartial(modelBuilder);

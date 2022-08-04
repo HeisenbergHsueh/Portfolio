@@ -13,7 +13,6 @@ namespace Portfolio.Models.LoginSystem
     public class LoginViewModel
     {
         [Required(ErrorMessage = "請輸入帳號")]
-        [Remote]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "請輸入密碼"), MaxLength(50)]

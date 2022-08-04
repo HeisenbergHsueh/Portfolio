@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 using Portfolio.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace Portfolio
 {
@@ -29,12 +31,27 @@ namespace Portfolio
         {
             services.AddControllersWithViews();
 
+            #region DB連線字串
             //透過 DbContextOptions 物件上的方法，來連結 appsetting.json 中，設定好的 SQL server connection string
             services.AddDbContext<PortfolioContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("HeisenbergHsueh_Portfolio_DB")));
+            #endregion
 
-            services.AddDbContext<LoginSystemContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("HeisenbergHsueh_Portfolio_DB")));
+            #region Cookie驗證
+            //註冊cookie驗證的服務
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
+                //browser 會限制 cookie 只能經由 http protocol 來存取
+                options.Cookie.HttpOnly = true;
+                //設定登入頁面，未登入時自動導入到登入頁面
+                options.LoginPath = new PathString("/LoginSystem/Login");
+                //設定登出頁面(此頁面可以省略)
+                options.LogoutPath = new PathString("/LoginSystem/Logout");
+                //當登入者不具有當下頁面的訪問權限時，會自動轉跳到此Forbidden頁面
+                options.AccessDeniedPath = new PathString("/LoginSystem/Forbidden");
+                //設定登入有效時間(單位:分鐘)
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+            });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,10 +69,17 @@ namespace Portfolio
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
+            #region cookie驗證
+            //須注意 UseAuthentication() && UseAuthorization() 的順序不可以顛倒
+            //啟用 cookie 原則
+            app.UseCookiePolicy();
+            //啟用驗證
+            app.UseAuthentication();
+            //啟用授權
             app.UseAuthorization();
+            #endregion
 
             app.UseEndpoints(endpoints =>
             {

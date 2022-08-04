@@ -15,8 +15,8 @@
             <div class="form-group">
                 <label asp-for="UserName" class="control-label"></label>
                 <input asp-for="UserName" class="form-control" />
+                <span id="CheckUserNameMessage"></span>
                 <span asp-validation-for="UserName" class="text-danger"></span>
-                <h6 class="text-danger">@ViewData["Message"]</h6>
             </div>
             <div class="form-group">
                 <label asp-for="UserPassword" class="control-label"></label>
@@ -46,3 +46,31 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $('#UserName').focusout(function () {
+        var GetUserName = $('#UserName').val();
+        var message = $('#CheckUserNameMessage');
+
+        $.ajax({
+            type: 'POST',
+            url: "@Url.Action("CheckUserNameAvaiable")",
+            data: { name: GetUserName },
+            dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    message.css('color', 'red');
+                    message.html('<br />User name already exist.<br />')
+                } else {
+                    message.css('color', 'green');
+                    message.html('<br />User name could be use.<br />')
+                }
+            },
+            error: function (req, status, error) {
+                message.css('color', 'red');
+                message.html('<br />post error.<br />')
+            }
+
+        });
+    });
+</script>
