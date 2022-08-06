@@ -40,6 +40,8 @@ namespace Portfolio
             #region Cookie驗證
             //註冊cookie驗證的服務
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
+                //設定cookie名稱
+                options.Cookie.Name = "HeisenbergHsueh_Cookie";
                 //browser 會限制 cookie 只能經由 http protocol 來存取
                 options.Cookie.HttpOnly = true;
                 //設定登入頁面，未登入時自動導入到登入頁面
@@ -50,6 +52,8 @@ namespace Portfolio
                 options.AccessDeniedPath = new PathString("/LoginSystem/Forbidden");
                 //設定登入有效時間(單位:分鐘)
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                //SlidingExpiration = true，表示說，如果cookie當前的時間已經超過開始時間與結束時間的一半，則重新頒發cookie
+                //options.SlidingExpiration = true;
             });
             #endregion
         }
@@ -85,7 +89,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=LoginSystem}/{action=Login}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

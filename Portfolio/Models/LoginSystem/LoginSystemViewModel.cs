@@ -16,10 +16,13 @@ namespace Portfolio.Models.LoginSystem
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "請輸入密碼"), MaxLength(50)]
-        //[DataType(DataType.Password)]
+        [DataType(DataType.Password)]
         public string UserPassword { get; set; }
     }
 
+    /// <summary>
+    /// 註冊用的Register Model
+    /// </summary>
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "請輸入帳號"), MaxLength(50)]

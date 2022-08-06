@@ -43,7 +43,7 @@ namespace Portfolio.Controllers
         [HttpPost, ActionName(nameof(Login))]
         [AllowAnonymous] //任何人都可以瀏覽此頁面
         [AutoValidateAntiforgeryToken]
-        public IActionResult LoginComfirm(LoginViewModel model)
+        public IActionResult LoginComfirm(LoginViewModel model, string returnUrl)
         {
             //確認有無此user的帳號
             var GetUserFromDB = from u in _db.UserLogin where u.UserName == model.UserName select u;
@@ -74,7 +74,7 @@ namespace Portfolio.Controllers
                         new Claim(ClaimTypes.NameIdentifier, UserData.UserId.ToString()),
                         //設定ClaimTypes.Name，就是使用者帳號
                         new Claim(ClaimTypes.Name, UserData.UserName),
-                        //設定ClaimTypes.Email
+                        //設定ClaimTypes.Email，就是登入者的Email address
                         new Claim(ClaimTypes.Email, UserData.UserEmail)
                         
                     };
@@ -98,31 +98,56 @@ namespace Portfolio.Controllers
                     //(4)
                     var authProperties = new AuthenticationProperties
                     {
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5),
-                        IsPersistent = false
+                        //參考資料 : https://docs.microsoft.com/zh-tw/dotnet/api/microsoft.aspnetcore.authentication.authenticationproperties?view=aspnetcore-3.1
+                        //IssuedUtc可用來設定通行證的開始時間，若沒有設定此參數，則預設為UtcNow
+                        //IssuedUtc = DateTimeOffset.UtcNow,
+
+                        //設定通行證的到期時間，若沒設定此選項，則通行證會吃到startup.cs中，AddCookie()所設定的expire date(60分鐘)
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                        //ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(20),
+                        //參考資料 : https://ithelp.ithome.com.tw/articles/10000095
+                        //IsPersistent = false，表示將cookie設定成暫時性的cookie，則在chrome瀏覽器上會顯示為session cookie
+                        //session cookie會在使用者將瀏覽器關閉之後，將cookie的資訊清除
+                        //因此，如果設定成暫時性的cookie的話，也就不需要設定ExpiresUtc
+                        //IsPersistent = true，表示將cookie設定成持續性的cookie，即使在關閉瀏覽器之後，仍會繼續儲存，直到時間到期為止
+                        IsPersistent = true,
+                        //AllowRefresh : 讓使用者的通行證有效時間剩下一半時，可以透過重新整理刷新到期時間
+                        //此Method與startup.cs中AddCookie()的SlidingExpiration一樣
+                        AllowRefresh = true,
+                        //RedirectUri = "/"
                     };
 
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
-                  
+
                     //比對一致則登入成功
                     //TempData["Login"] = "Login Successful";
+
+                    if (Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
                     //比對錯誤則顯示密碼錯誤的page
-                    TempData["Login"] = "Password Error";
+                    //ViewData、ViewBag、TempData的差異請參考 : https://www.796t.com/content/1548032961.html
+                    //由於是固定的data type，因此使用ViewData
+                    //而在此要注意的是，當使用ViewBag、ViewData時，不能使用RedirectToAction()
+                    //因為重新定向之後，ViewBag、ViewData會變成null
+                    //如果真的要使用RedirectToAction()，則必須使用TempData，TempData才能夠跨頁面使用
+                    ViewData["ErrorMessage"] = "密碼錯誤";
 
-                    return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
+                    return View("Login");
                 }
             }
             else
             {
                 //若找不到此user帳號，則秀User Name Error的錯誤
-                TempData["Login"] = "User Name Error";
+                ViewData["ErrorMessage"] = "查無此帳號";
 
-                return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
+                return View("Login");
             }           
         }
         #endregion
