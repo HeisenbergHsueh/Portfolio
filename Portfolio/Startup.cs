@@ -9,10 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+//連接DB
 using Portfolio.Data;
 using Microsoft.EntityFrameworkCore;
+
+//cookie認證、授權
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Portfolio
 {
@@ -56,6 +60,15 @@ namespace Portfolio
                 //options.SlidingExpiration = true;
             });
             #endregion
+
+            #region 授權
+            services.AddAuthorization(options => {
+                //原則授權               
+                options.AddPolicy("IsIT", policy => {
+                    policy.RequireClaim(ClaimTypes.Role, "IT");
+                });
+            });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,7 +85,7 @@ namespace Portfolio
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles();   //設定使用靜態檔案
             app.UseRouting();
 
             #region cookie驗證

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 //cookie授權
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Portfolio.Services;
 
 namespace Portfolio.Controllers
 {
@@ -16,13 +18,23 @@ namespace Portfolio.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IWebHostEnvironment _env;
+
+        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment env)
         {
             _logger = logger;
+            _env = env;
         }
 
         public IActionResult Index()
         {
+            //string wwwroot_path = _env.WebRootPath.ToString();
+            //Console.WriteLine(wwwroot_path);
+
+            MailService mailService = new MailService(_env);
+
+            mailService.SendMail("nonsensehao@gmail.com");
+
             return View();
         }
 

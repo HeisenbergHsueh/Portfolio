@@ -40,6 +40,12 @@ namespace Portfolio.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 確認user輸入的帳密、設定cookie、權限
+        /// </summary>
+        /// <param name="model">User所輸入的帳號與密碼</param>
+        /// <param name="returnUrl">User在登入前所在的頁面的url</param>
+        /// <returns></returns>
         [HttpPost, ActionName(nameof(Login))]
         [AllowAnonymous] //任何人都可以瀏覽此頁面
         [AutoValidateAntiforgeryToken]
@@ -54,7 +60,7 @@ namespace Portfolio.Controllers
                 var UserData = GetUserFromDB.FirstOrDefault(u => u.UserName == model.UserName);
 
                 //接著將key in的密碼進行hash比對
-                string Password = ComputerToHash.StringToHash(model.UserPassword + UserData.Salt);
+                string Password = ComputerToHash.StringToHash(String.Concat(model.UserPassword,UserData.Salt));
 
                 if (Password == UserData.UserPassword)
                 {
@@ -114,6 +120,9 @@ namespace Portfolio.Controllers
                         //AllowRefresh : 讓使用者的通行證有效時間剩下一半時，可以透過重新整理刷新到期時間
                         //此Method與startup.cs中AddCookie()的SlidingExpiration一樣
                         AllowRefresh = true,
+                        //URI、URL、URN(1) : https://www.796t.com/content/1541700250.html
+                        //URI、URL、URN(2) : http://www.ifuun.com/a20179175334752/
+                        //RedirectUri在允許用戶使用google、facebook、githug帳號進行登入的時候會用到，通常會使用像是oAuth 2.0這種方式來實作
                         //RedirectUri = "/"
                     };
 
@@ -186,7 +195,7 @@ namespace Portfolio.Controllers
           
             result.UserName = model.UserName;
             result.Salt = Guid.NewGuid().ToString();
-            result.UserPassword = ComputerToHash.StringToHash(model.UserPassword + result.Salt);
+            result.UserPassword = ComputerToHash.StringToHash(String.Concat(model.UserPassword,result.Salt));
             result.UserEmail = model.UserEmail;
             result.UserRole = "User";
             
@@ -228,6 +237,12 @@ namespace Portfolio.Controllers
 
         [Authorize(Roles = "User,Administrator")]
         public IActionResult MultipleRolePage()
+        {
+            return View();
+        }
+
+        [Authorize(Policy = "IsIT")]
+        public IActionResult IT_could_be_browser_Page()
         {
             return View();
         }

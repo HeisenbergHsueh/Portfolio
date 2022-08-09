@@ -18,4 +18,8 @@
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Mail\RegisterEmailTemplate.html" />
+  </ItemGroup>
+
 </Project>
