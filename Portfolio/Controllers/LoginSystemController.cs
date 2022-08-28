@@ -4,6 +4,7 @@ using Portfolio.Data;
 using Portfolio.Security;
 using System.Linq;
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 //cookie授權
@@ -12,15 +13,22 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
+//寄信服務
+using Microsoft.AspNetCore.Hosting;
+using Portfolio.Services;
+
 
 namespace Portfolio.Controllers
 {
     public class LoginSystemController : Controller
     {
         private readonly PortfolioContext _db;
-        public LoginSystemController(PortfolioContext db)
+        private readonly IWebHostEnvironment _env;
+
+        public LoginSystemController(PortfolioContext db, IWebHostEnvironment env)
         {
             _db = db;
+            _env = env;
         }
 
         public IActionResult Index()
@@ -52,15 +60,15 @@ namespace Portfolio.Controllers
         public IActionResult LoginComfirm(LoginViewModel model, string returnUrl)
         {
             //確認有無此user的帳號
-            var GetUserFromDB = from u in _db.UserLogin where u.UserName == model.UserName select u;
+            var GetUserFromDB = from u in _db.UserLogin where u.UserAccount == model.UserAccount select u;
 
             if (GetUserFromDB != null)
             {
                 //如果有則回傳該筆user的資料
-                var UserData = GetUserFromDB.FirstOrDefault(u => u.UserName == model.UserName);
+                var UserData = GetUserFromDB.FirstOrDefault(u => u.UserAccount == model.UserAccount);
 
                 //接著將key in的密碼進行hash比對
-                string Password = ComputerToHash.StringToHash(String.Concat(model.UserPassword,UserData.Salt));
+                string Password = ComputeToHash.StringToHash(String.Concat(model.UserPassword,UserData.Salt), "MD5");
 
                 if (Password == UserData.UserPassword)
                 {
@@ -128,9 +136,10 @@ namespace Portfolio.Controllers
 
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
 
-                    //比對一致則登入成功
-                    //TempData["Login"] = "Login Successful";
-
+                    //以下的功能為 : 登入後自動跳轉回登入前的頁面
+                    //舉例 : 當user嘗試進入A頁面，但因為A頁面需要授權，因此會先轉到登入頁面，但登入頁通常在登入完之後，
+                    //都會預設去 /Home/Index 的頁面，而下面這段code，會讓user在登入後，直接跳轉至登入前的A頁面
+                    //參考資料 : https://www.796t.com/content/1508336427.html
                     if (Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
@@ -192,17 +201,28 @@ namespace Portfolio.Controllers
         public IActionResult RegisterComfirm(RegisterViewModel model)
         {
             UserLogin result = new UserLogin();
-          
-            result.UserName = model.UserName;
+
+            result.UserAccount = model.UserAccount;
+            
             result.Salt = Guid.NewGuid().ToString();
-            result.UserPassword = ComputerToHash.StringToHash(String.Concat(model.UserPassword,result.Salt));
+            result.UserPassword = ComputeToHash.StringToHash(String.Concat(model.UserPassword,result.Salt), "MD5");
+            result.UserName = model.UserName;
             result.UserEmail = model.UserEmail;
             result.UserRole = "User";
-            
+            result.IsEmailAuthenticated = 1;
+
+            //讀取 WebRootPath(就是wwwroot所在目錄)
+            string WebRootPath = _env.WebRootPath.ToString();
+
+            //讀取信件範本
+            string MailTemplate = System.IO.File.ReadAllText(WebRootPath + @"\Mail\RegisterEmailTemplate.html");
+            //
+            MailTemplate = MailTemplate.Replace("{{UserName}}", result.UserName);
+
             _db.Add(result);
             _db.SaveChanges();
 
-            TempData["Register"] = "Registration Sucessful";
+            TempData["Message"] = "Registration Sucessful";
 
             return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
         }
@@ -211,8 +231,7 @@ namespace Portfolio.Controllers
         #region 設定不同權限的page
         public IActionResult LoginSystemDisplayMessagePage()
         {
-            ViewData["Message"] = TempData["Register"];
-            ViewData["Message"] = TempData["Login"];
+            ViewData["Message"] = TempData["Message"];
 
             return View();
         }

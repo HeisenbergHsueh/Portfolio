@@ -7,6 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+//hash加密
+using Portfolio.Security;
+
 //cookie授權
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -18,12 +21,9 @@ namespace Portfolio.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly IWebHostEnvironment _env;
-
-        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment env)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _env = env;
         }
 
         public IActionResult Index()
@@ -31,9 +31,13 @@ namespace Portfolio.Controllers
             //string wwwroot_path = _env.WebRootPath.ToString();
             //Console.WriteLine(wwwroot_path);
 
-            MailService mailService = new MailService(_env);
+            //MailService mailService = new MailService();
 
-            mailService.SendMail("nonsensehao@gmail.com");
+            //mailService.SendMail("nonsensehao@gmail.com");
+
+            //string AuthCode = mailService.GenerateAuthCode();
+
+            //Console.WriteLine(AuthCode);
 
             return View();
         }

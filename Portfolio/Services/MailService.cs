@@ -18,27 +18,40 @@ namespace Portfolio.Services
     /// </summary>
     public class MailService
     {
-        public readonly IWebHostEnvironment _env;
-
-        public MailService(IWebHostEnvironment env)
-        {
-            _env = env;
-        }
-
         //gmail使用程式寄信所需做的相關設定 : https://www.webdesigntooler.com/google-smtp-send-mail
         //google應用程式驗證碼 : pxfxlongnhdcqngs
         private string mail_account = "heisenberghsueh";
         private string mail_password = "pxfxlongnhdcqngs";
         private string mail_address = "heisenberghsueh@gmail.com";
 
+        #region 產生驗證碼
+        public string GenerateAuthCode()
+        {
+            //宣告要回傳的驗證碼初始值
+            string ValidateCode = string.Empty;
+            
+            //設定含有英文字母大小寫+數字的 string array
+            string[] LetterArray = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            
+            //宣告可產生隨機值的object
+            Random random = new Random();
+
+            //使用for迴圈產生50個隨機字母數字構成的字串當作驗證碼
+            for (int i = 0; i < 50; i++)
+            {
+                ValidateCode += LetterArray[random.Next(LetterArray.Count())];
+            }
+
+            return ValidateCode;
+        }
+        #endregion
+
+        #region 寄信
         /// <summary>
         /// 寄信的方法
         /// </summary>
-        public void SendMail(string RecipientMailAddress)
-        {
-            //讀取信件範本
-            string MailSample = File.ReadAllText(_env.WebRootPath.ToString() + @"\Mail\RegisterEmailTemplate.html");
-            
+        public void SendMail(string RecipientMailAddress, string wwwrootPath, string MailBody)
+        {            
             //建立寄信用SMTP協定，這裡使用Gmail為例
             SmtpClient SMTPClient = new SmtpClient("smtp.gmail.com");
             //設定Gmail使用的Port
@@ -57,31 +70,37 @@ namespace Portfolio.Services
             mail.To.Add(RecipientMailAddress);
             //設定信件主旨
             mail.Subject = "HeisenbergHsueh Portfolio 會員註冊認證信";
-            //設定信件內容
-            mail.Body = MailSample;
-            //設定信件格式為HTML
-            mail.IsBodyHtml = true;
+            
 
-            //攜帶附件
-            Attachment attachment = new Attachment(_env.WebRootPath.ToString() + @"\Mail\attachment.txt");
+            //攜帶附件(包括要內嵌於信件內容中使用的圖片)
+            //string attachment_file = _env.WebRootPath.ToString() + @"\Mail\attachment.txt";
+            string attachment_image = wwwrootPath + @"\Images\Capoo_Hi.jpg";
+            
+            Attachment attachment = new Attachment(attachment_image);
+
+            //如何內嵌圖片至信件內容中 : https://blog.miniasp.com/post/2008/02/06/How-to-send-Email-with-embedded-picture-image
+
+            attachment.Name = Path.GetFileName(attachment_image);
+            attachment.NameEncoding = Encoding.GetEncoding("utf-8");
+            attachment.TransferEncoding = System.Net.Mime.TransferEncoding.Base64;
+
+            //設定該附件為一個內嵌附件(inline attachment)
+            attachment.ContentDisposition.Inline = true;
+            attachment.ContentDisposition.DispositionType = System.Net.Mime.DispositionTypeNames.Inline;
+
             //加入附件至mail中
             mail.Attachments.Add(attachment);
 
-            //如何內嵌圖片至信件內容中 : https://blog.miniasp.com/post/2008/02/06/How-to-send-Email-with-embedded-picture-image
-            string ImagePath = _env.WebRootPath.ToString() + @"\Images\Capoo_Hi.jpg";
-            Attachment Image = new Attachment(ImagePath);
-            Image.Name = Path.GetFileName(ImagePath);
-            Image.NameEncoding = Encoding.GetEncoding("utf-8");
-            Image.TransferEncoding = System.Net.Mime.TransferEncoding.Base64;
+            MailBody = MailBody.Replace("{{Image}}", "cid:" + attachment.ContentId);
 
-            //設定該附件為一個內嵌附件(inline attachment)
-            Image.ContentDisposition.Inline = true;
-            Image.ContentDisposition.DispositionType = System.Net.Mime.DispositionTypeNames.Inline;
-
-            mail.Attachments.Add(Image);
+            //設定信件內容
+            mail.Body = MailBody;
+            //設定信件格式為HTML
+            mail.IsBodyHtml = true;
 
             //送出信件
             SMTPClient.Send(mail);
         }
+        #endregion
     }
 }

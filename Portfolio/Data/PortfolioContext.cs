@@ -55,13 +55,17 @@ namespace Portfolio.Data
 
                 entity.Property(e => e.UserId).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.UserName)
+                entity.Property(e => e.UserAccount)
                     .IsRequired()
                     .HasMaxLength(50);
 
                 entity.Property(e => e.UserPassword)
                     .IsRequired()
                     .HasMaxLength(300);
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UserEmail)
                     .IsRequired()
@@ -74,6 +78,12 @@ namespace Portfolio.Data
                 entity.Property(e => e.UserRole)
                     .IsRequired(false)
                     .HasMaxLength(300);
+
+                entity.Property(e => e.IsEmailAuthenticated);
+
+                entity.Property(e => e.AuthCode)
+                    .IsRequired(false)
+                    .HasMaxLength(100);
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -13,7 +13,7 @@ namespace Portfolio.Models.LoginSystem
     public class LoginViewModel
     {
         [Required(ErrorMessage = "請輸入帳號")]
-        public string UserName { get; set; }
+        public string UserAccount { get; set; }
 
         [Required(ErrorMessage = "請輸入密碼"), MaxLength(50)]
         [DataType(DataType.Password)]
@@ -26,7 +26,7 @@ namespace Portfolio.Models.LoginSystem
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "請輸入帳號"), MaxLength(50)]
-        public string UserName { get; set; }
+        public string UserAccount { get; set; }
 
         [Required(ErrorMessage = "請輸入密碼"), MaxLength(50)]
         [DataType(DataType.Password)]
@@ -35,6 +35,9 @@ namespace Portfolio.Models.LoginSystem
         [Required(ErrorMessage = "請再一次輸入密碼"), MaxLength(50)]
         [DataType(DataType.Password), Compare(nameof(UserPassword), ErrorMessage = "密碼不相符")]
         public string ComfirmUserPassword { get; set; }
+
+        [Required(ErrorMessage = "請輸入姓名"), MaxLength(50)]
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "請輸入Email"), MaxLength(50)]
         [DataType(DataType.EmailAddress)]
