@@ -21,8 +21,6 @@ namespace Portfolio.Data
         {
         }
 
-        public virtual DbSet<Fruits> Fruits { get; set; }
-        public virtual DbSet<Movies> Movies { get; set; }
         public virtual DbSet<UserLogin> UserLogin { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,24 +29,6 @@ namespace Portfolio.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Fruits>(entity =>
-            {
-                entity.HasKey(e => e.FruitId)
-                    .HasName("PK_Fruits_1");
-
-                entity.Property(e => e.FruitId).ValueGeneratedNever();
-
-                entity.Property(e => e.FruitName)
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<Movies>(entity =>
-            {
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-            });
-
             modelBuilder.Entity<UserLogin>(entity =>
             {
                 entity.HasKey(e => e.UserId);

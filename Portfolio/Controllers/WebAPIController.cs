@@ -34,15 +34,11 @@ namespace Portfolio.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        /// <summary>
-        /// 註冊信箱的驗證
-        /// 讓註冊帳號的使用者，在信箱中收到驗證信的URL時，可點擊URL回來做驗證
-        /// </summary>
-        /// <param name="AuthCode">驗證用的hash code</param>
-        /// <returns></returns>
+        #region 驗證信箱的API
         [HttpGet("{UserAccount}/{AuthCode}")]
-        public IActionResult EmailValidation(string UserAccount ,string AuthCode)
+        public IActionResult EmailValidation(string UserAccount, string AuthCode)
         {
+            //確認有無此user的帳號
             var GetUserFromDB = from u in _db.UserLogin where u.UserAccount == UserAccount select u;
 
             if (GetUserFromDB != null)
@@ -52,16 +48,26 @@ namespace Portfolio.Controllers
 
                 if (UserData.AuthCode == AuthCode)
                 {
-                    //若驗證碼比對成功，則將DB中的IsEmailAuthenticated由1(false)改成0(True)
-                    UserData.IsEmailAuthenticated = 0;
+                    if (UserData.IsEmailAuthenticated != 0)
+                    {
+                        //若驗證碼比對成功，則將DB中的IsEmailAuthenticated由1(false)改成0(True)
+                        UserData.IsEmailAuthenticated = 0;
 
-                    //然後使用Update，更新UserData的資料，然後再存回DB
-                    _db.Update(UserData);
-                    _db.SaveChanges();
+                        //然後使用Update，更新UserData的資料，然後再存回DB
+                        _db.Update(UserData);
+                        _db.SaveChanges();
 
-                    TempData["Message"] = "Authentication Sucessful";
+                        TempData["Message"] = "Authentication Sucessful";
 
-                    return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
+                        return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
+                    }
+                    else
+                    {
+                        TempData["Message"] = "This account was authenticated";
+
+                        return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
+                    }
+
                 }
                 else
                 {
@@ -76,6 +82,7 @@ namespace Portfolio.Controllers
                 TempData["Message"] = "查無此帳號";
                 return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
             }
-        }      
+        }
+        #endregion
     }
 }

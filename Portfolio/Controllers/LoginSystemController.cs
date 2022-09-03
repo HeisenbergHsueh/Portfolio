@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Portfolio.Services;
 
+//組合驗證網址
+using Microsoft.AspNetCore.Http;
+
 
 namespace Portfolio.Controllers
 {
@@ -60,17 +63,17 @@ namespace Portfolio.Controllers
         public IActionResult LoginComfirm(LoginViewModel model, string returnUrl)
         {
             //確認有無此user的帳號
-            var GetUserFromDB = from u in _db.UserLogin where u.UserAccount == model.UserAccount select u;
+            var GetUserFromDB = GetUserDataByAccount(model.UserAccount);
 
             if (GetUserFromDB != null)
             {
                 //如果有則回傳該筆user的資料
-                var UserData = GetUserFromDB.FirstOrDefault(u => u.UserAccount == model.UserAccount);
+                //var UserData = GetUserFromDB.FirstOrDefault(u => u.UserAccount == model.UserAccount);
 
                 //接著將key in的密碼進行hash比對
-                string Password = ComputeToHash.StringToHash(String.Concat(model.UserPassword,UserData.Salt), "MD5");
+                string Password = ComputeToHash.StringToHash(String.Concat(model.UserPassword, GetUserFromDB.Salt), "MD5");
 
-                if (Password == UserData.UserPassword)
+                if (Password == GetUserFromDB.UserPassword)
                 {
                     //使用Claims來做cookie驗證(製作通行證)
                     //有4個步驟要做
@@ -85,17 +88,17 @@ namespace Portfolio.Controllers
                     var Claims = new List<Claim>
                     {
                         //設定ClaimTypes.NameIdentifier，就是UserId
-                        new Claim(ClaimTypes.NameIdentifier, UserData.UserId.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, GetUserFromDB.UserId.ToString()),
                         //設定ClaimTypes.Name，就是使用者帳號
-                        new Claim(ClaimTypes.Name, UserData.UserName),
+                        new Claim(ClaimTypes.Name, GetUserFromDB.UserName),
                         //設定ClaimTypes.Email，就是登入者的Email address
-                        new Claim(ClaimTypes.Email, UserData.UserEmail)
+                        new Claim(ClaimTypes.Email, GetUserFromDB.UserEmail)
                         
                     };
 
                     //設定登入者所擁有的角色至Claim中
                     //(A).先從DB抓取角色清單
-                    string[] RoleList = UserData.UserRole.Split(',');
+                    string[] RoleList = GetUserFromDB.UserRole.Split(',');
 
                     //(B).使用foreach loop將擁有的角色一一加入到Claim
                     foreach(var Role in RoleList)
@@ -197,7 +200,7 @@ namespace Portfolio.Controllers
 
         [HttpPost, ActionName(nameof(Register))]
         [AllowAnonymous] //任何人都可以瀏覽此頁面
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken] //防止CSRF攻擊
         public IActionResult RegisterComfirm(RegisterViewModel model)
         {
             UserLogin result = new UserLogin();
@@ -210,19 +213,27 @@ namespace Portfolio.Controllers
             result.UserEmail = model.UserEmail;
             result.UserRole = "User";
             result.IsEmailAuthenticated = 1;
+            result.AuthCode = ComputeToHash.StringToHash(model.UserAccount, "MD5");
 
             //讀取 WebRootPath(就是wwwroot所在目錄)
             string WebRootPath = _env.WebRootPath.ToString();
 
+            //組合驗證Email的驗證網址
+            string EmailValidationURL = $"{Request.Scheme}://{Request.Host.Value}/api/WebAPI/{result.UserAccount}/{result.AuthCode}";
+
             //讀取信件範本
             string MailTemplate = System.IO.File.ReadAllText(WebRootPath + @"\Mail\RegisterEmailTemplate.html");
-            //
+            //將信件範本中的{{UserName}}、{{EmailValidationURL}}分別用result.UserName、EmailValidationURL取代
             MailTemplate = MailTemplate.Replace("{{UserName}}", result.UserName);
+            MailTemplate = MailTemplate.Replace("{{EmailValidationURL}}", EmailValidationURL);
+
+            MailService mailService = new MailService();
+            mailService.SendMail(result.UserEmail, WebRootPath, MailTemplate);
 
             _db.Add(result);
             _db.SaveChanges();
 
-            TempData["Message"] = "Registration Sucessful";
+            TempData["Message"] = "會員註冊成功，請至註冊時所填的信箱收取驗證信進行驗證";
 
             return RedirectToAction("LoginSystemDisplayMessagePage", "LoginSystem");
         }
@@ -279,7 +290,7 @@ namespace Portfolio.Controllers
         /// <returns></returns>
         public JsonResult CheckUserNameAvaiable(string name)
         {
-            var SearchUserName = from u in _db.UserLogin where u.UserName == name select u;
+            var SearchUserName = from u in _db.UserLogin where u.UserAccount == name select u;
 
             bool IsExist = false;
 
@@ -316,5 +327,29 @@ namespace Portfolio.Controllers
             return View();
         }
         #endregion
+
+        #region 查詢單筆UserData
+        /// <summary>
+        /// 利用User Account來查詢資料庫中，是否有該筆帳號的資料
+        /// </summary>
+        /// <param name="UserAccount">使用者帳號</param>
+        /// <returns></returns>
+        private UserLogin GetUserDataByAccount(string UserAccount)
+        {
+            UserLogin UserData = new UserLogin();
+
+            var QueryUserData = from u in _db.UserLogin where u.UserAccount == UserAccount select u;
+
+            if (QueryUserData != null)
+            {
+                UserData = QueryUserData.FirstOrDefault(u => u.UserAccount == UserAccount);
+
+                return UserData;
+            }
+
+            return null;
+        }
+        #endregion
+       
     }
 }

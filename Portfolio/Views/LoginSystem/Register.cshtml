@@ -13,10 +13,10 @@
         <form asp-action="Register">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
+                <label asp-for="UserAccount" class="control-label"></label>
+                <input asp-for="UserAccount" class="form-control" />
                 <span id="CheckUserNameMessage"></span>
-                <span asp-validation-for="UserName" class="text-danger"></span>
+                <span asp-validation-for="UserAccount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UserPassword" class="control-label"></label>
@@ -27,6 +27,11 @@
                 <label asp-for="ComfirmUserPassword" class="control-label"></label>
                 <input asp-for="ComfirmUserPassword" class="form-control" />
                 <span asp-validation-for="ComfirmUserPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UserEmail" class="control-label"></label>
@@ -48,8 +53,8 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
-    $('#UserName').focusout(function () {
-        var GetUserName = $('#UserName').val();
+    $('#UserAccount').focusout(function () {
+        var GetUserName = $('#UserAccount').val();
         var message = $('#CheckUserNameMessage');
 
         $.ajax({
@@ -60,10 +65,10 @@
             success: function (msg) {
                 if (msg) {
                     message.css('color', 'red');
-                    message.html('<br />User name already exist.<br />')
+                    message.html('<br />User account already exist.<br />')
                 } else {
                     message.css('color', 'green');
-                    message.html('<br />User name could be use.<br />')
+                    message.html('<br />User account could be use.<br />')
                 }
             },
             error: function (req, status, error) {

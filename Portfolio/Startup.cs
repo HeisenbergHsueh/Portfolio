@@ -102,7 +102,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=LoginSystem}/{action=Register}/{id?}");
             });
         }
     }

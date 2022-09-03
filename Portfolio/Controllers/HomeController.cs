@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Portfolio.Services;
 
+//
+using Microsoft.AspNetCore.Http.Extensions;
+
 namespace Portfolio.Controllers
 {
     public class HomeController : Controller
@@ -38,6 +41,14 @@ namespace Portfolio.Controllers
             //string AuthCode = mailService.GenerateAuthCode();
 
             //Console.WriteLine(AuthCode);
+
+            //string UserAccount = "User06";
+
+            //string AuthCode = "0FF134D04A4DE30211BC0EE0D84251EA";
+
+            //string EmailValidationURL = $"{Request.Scheme}://{Request.Host.Value}/api/WebAPI/{UserAccount}/{AuthCode}";
+
+            //Console.WriteLine("test");
 
             return View();
         }
