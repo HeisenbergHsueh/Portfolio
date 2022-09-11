@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+//加解密
+using Portfolio.Security;
+
 //連接DB
 using Portfolio.Data;
 using Microsoft.EntityFrameworkCore;
@@ -36,9 +39,18 @@ namespace Portfolio
             services.AddControllersWithViews();
 
             #region DB連線字串
+            string CipherText = Configuration.GetConnectionString("SQL_ConnectionEncryptString");
+            string PublicKey = Configuration.GetConnectionString("Public_Key");
+
+            CipherServices CS = new CipherServices();
+
+            //解密連線字串
+            string SQLConnectionString = CS.CipherToPlainText(CipherText, PublicKey);
+
             //透過 DbContextOptions 物件上的方法，來連結 appsetting.json 中，設定好的 SQL server connection string
-            services.AddDbContext<PortfolioContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("HeisenbergHsueh_Portfolio_DB")));
+            //services.AddDbContext<PortfolioContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("HeisenbergHsueh_Portfolio_DB")));
+            services.AddDbContext<PortfolioContext>(options => options.UseSqlServer(SQLConnectionString));
             #endregion
 
             #region Cookie驗證
@@ -102,7 +114,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=LoginSystem}/{action=Register}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 //hash加密
 using Portfolio.Security;
@@ -24,9 +25,12 @@ namespace Portfolio.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IConfiguration _config;
+
+        public HomeController(ILogger<HomeController> logger, IConfiguration config)
         {
             _logger = logger;
+            _config = config;
         }
 
         public IActionResult Index()
@@ -49,6 +53,12 @@ namespace Portfolio.Controllers
             //string EmailValidationURL = $"{Request.Scheme}://{Request.Host.Value}/api/WebAPI/{UserAccount}/{AuthCode}";
 
             //Console.WriteLine("test");
+
+            //string PublicKey = _config.GetConnectionString("Public_Key").ToString();
+
+            //CipherServices CS = new CipherServices();
+
+            //CS.PlainTextToCipher("Server=WIN-EH05M9OGGRV;Database=HeisenbergHsueh_Portfolio;Trusted_Connection=True;MultipleActiveResultSets=true", PublicKey);
 
             return View();
         }

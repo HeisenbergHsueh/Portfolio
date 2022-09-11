@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Portfolio.Models.LoginSystem
 {
+    #region 登入使用的ViewModel
     /// <summary>
     /// 給user進行登入的view model，因此僅有UserName跟Password兩個屬性
     /// </summary>
@@ -19,7 +20,9 @@ namespace Portfolio.Models.LoginSystem
         [DataType(DataType.Password)]
         public string UserPassword { get; set; }
     }
+    #endregion
 
+    #region 註冊使用的ViewModel
     /// <summary>
     /// 註冊用的Register Model
     /// </summary>
@@ -44,4 +47,5 @@ namespace Portfolio.Models.LoginSystem
         //[DataType(DataType.EmailAddress, ErrorMessage = "Email格式不正確")]
         public string UserEmail { get; set; }
     }
+    #endregion
 }

@@ -16,7 +16,7 @@ namespace Portfolio.Services
     /// 此類別用來撰寫各式各樣與mail有關的服務
     /// 例如 : 會員註冊認證信、重設密碼認證信等等
     /// </summary>
-    public class MailService
+    public class MailServices
     {
         //gmail使用程式寄信所需做的相關設定 : https://www.webdesigntooler.com/google-smtp-send-mail
         //google應用程式驗證碼 : pxfxlongnhdcqngs
@@ -25,6 +25,10 @@ namespace Portfolio.Services
         private string mail_address = "heisenberghsueh@gmail.com";
 
         #region 產生驗證碼
+        /// <summary>
+        /// 隨機產生50個大小寫英文加數字組合的驗證碼
+        /// </summary>
+        /// <returns></returns>
         public string GenerateAuthCode()
         {
             //宣告要回傳的驗證碼初始值

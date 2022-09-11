@@ -2,13 +2,14 @@
 using System.Text;
 using System.Security.Cryptography;
 
-//Ref : https://www.twblogs.net/a/5d43a291bd9eee5327fb2f15
+//參考資料(1) : https://www.twblogs.net/a/5d43a291bd9eee5327fb2f15
 
 namespace Portfolio.Security
 {
     public class ComputeToHash
     {
-        internal static string StringToHash(string PlainText, string ChooseAlgo)
+        #region 字串加密轉成hash
+        internal string StringToHash(string PlainText, string ChooseAlgo)
         {
             string result = String.Empty;
 
@@ -23,13 +24,15 @@ namespace Portfolio.Security
           
             return result;
         }
+        #endregion
 
+        #region 使用MD5的演算法將字串加密成hash
         /// <summary>
         /// 將傳進來的字串，加密成MD5的hash
         /// </summary>
         /// <param name="PlainText">明文</param>
         /// <returns></returns>
-        private static string ComputeToMD5(string PlainText)
+        private string ComputeToMD5(string PlainText)
         {
             using (var cryptoMD5 = MD5.Create())
             {
@@ -45,13 +48,15 @@ namespace Portfolio.Security
                 return hashcode;
             }          
         }
+        #endregion
 
+        #region 使用SHA1的演算法將字串加密成hash
         /// <summary>
         /// 將傳進來的字串，加密成SHA1的hash
         /// </summary>
         /// <param name="PlainText">明文</param>
         /// <returns></returns>
-        private static string ComputeToSHA1(string PlainText)
+        private string ComputeToSHA1(string PlainText)
         {
             using (var cryptoSHA1 = SHA1.Create())
             {
@@ -67,5 +72,6 @@ namespace Portfolio.Security
                 return hashcode;
             }
         }
+        #endregion
     }
 }

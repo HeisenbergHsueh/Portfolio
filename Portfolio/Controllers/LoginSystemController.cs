@@ -47,7 +47,12 @@ namespace Portfolio.Controllers
         [HttpGet]
         [AllowAnonymous] //任何人都可以瀏覽此頁面
         public IActionResult Login()
-        {            
+        {      
+            //判斷是否已有帳號登入，如果有則導向首頁(Home/Index)，如果沒有則導向登入頁面(LoginSystem/Login)
+            if(User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -59,7 +64,7 @@ namespace Portfolio.Controllers
         /// <returns></returns>
         [HttpPost, ActionName(nameof(Login))]
         [AllowAnonymous] //任何人都可以瀏覽此頁面
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken] //防止CSRF攻擊
         public IActionResult LoginComfirm(LoginViewModel model, string returnUrl)
         {
             //確認有無此user的帳號
@@ -67,11 +72,10 @@ namespace Portfolio.Controllers
 
             if (GetUserFromDB != null)
             {
-                //如果有則回傳該筆user的資料
-                //var UserData = GetUserFromDB.FirstOrDefault(u => u.UserAccount == model.UserAccount);
+                ComputeToHash computeToHash = new ComputeToHash();
 
                 //接著將key in的密碼進行hash比對
-                string Password = ComputeToHash.StringToHash(String.Concat(model.UserPassword, GetUserFromDB.Salt), "MD5");
+                string Password = computeToHash.StringToHash(String.Concat(model.UserPassword, GetUserFromDB.Salt), "MD5");
 
                 if (Password == GetUserFromDB.UserPassword)
                 {
@@ -204,16 +208,25 @@ namespace Portfolio.Controllers
         public IActionResult RegisterComfirm(RegisterViewModel model)
         {
             UserLogin result = new UserLogin();
+            ComputeToHash computeToHash = new ComputeToHash();
 
             result.UserAccount = model.UserAccount;
             
+            //隨機產生一組GUID當作salt
             result.Salt = Guid.NewGuid().ToString();
-            result.UserPassword = ComputeToHash.StringToHash(String.Concat(model.UserPassword,result.Salt), "MD5");
+            //將password與salt合併之後，進行MD5的hash加密
+
+            result.UserPassword = computeToHash.StringToHash(String.Concat(model.UserPassword,result.Salt), "MD5");
+
+
             result.UserName = model.UserName;
             result.UserEmail = model.UserEmail;
+            //預設給註冊的帳號名為User的角色
             result.UserRole = "User";
+            //註冊之Email是否已驗證過，1表示還沒驗證，0則表示已經驗證
             result.IsEmailAuthenticated = 1;
-            result.AuthCode = ComputeToHash.StringToHash(model.UserAccount, "MD5");
+            //將註冊帳號以MD5加密之hash，並作為後續User驗證信箱用的驗證碼
+            result.AuthCode = computeToHash.StringToHash(model.UserAccount, "MD5");
 
             //讀取 WebRootPath(就是wwwroot所在目錄)
             string WebRootPath = _env.WebRootPath.ToString();
@@ -227,9 +240,11 @@ namespace Portfolio.Controllers
             MailTemplate = MailTemplate.Replace("{{UserName}}", result.UserName);
             MailTemplate = MailTemplate.Replace("{{EmailValidationURL}}", EmailValidationURL);
 
-            MailService mailService = new MailService();
+            //寄送驗證信
+            MailServices mailService = new MailServices();
             mailService.SendMail(result.UserEmail, WebRootPath, MailTemplate);
 
+            //將註冊資料存入資料庫中
             _db.Add(result);
             _db.SaveChanges();
 
@@ -304,21 +319,42 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 重設密碼
+        [Authorize] //必須要登入帳號才可以使用重設密碼的功能
+        public IActionResult ResetPassword()
+        {
+            
+
+            return View();
+        }
+
+        [HttpPost, ActionName(nameof(ResetPasswordComfirm))]
+        public IActionResult ResetPasswordComfirm()
+        {
+            return View();
+        }
+
         /// <summary>
-        /// 重設密碼
+        /// 確認舊密碼是否輸入正確
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        private static bool ResetPassword()
+        private bool IsCheckOldPasswordCorrect(string PwdHash)
         {
             return true;
         }
 
-        [HttpPost, ActionName(nameof(ResetPasswordComfirm))]
-        private static bool ResetPasswordComfirm()
+        /// <summary>
+        /// 將已轉成hash的新密碼update到DB
+        /// </summary>
+        /// <returns></returns>
+        private bool UpdateNewPasswordToDB(string PwdHash)
         {
             return true;
         }
+
+
+        #endregion
+
+        #region 忘記密碼
         #endregion
 
         #region 當權限不足時，會跳轉到Forbidden頁面
