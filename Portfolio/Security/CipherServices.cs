@@ -37,46 +37,7 @@ namespace Portfolio.Security
             return result;
         }
 
-        /// <summary>
-        /// AES雙向加密
-        /// 參考書籍 : 380個精選實例：一步步昇華成.NET Core大內高手
-        /// </summary>
-        /// <returns></returns>
-        private byte[] AES_BidirectionalEncryptData(byte[] key, byte[] iv, string content)
-        {
-
-            byte[] res = null;
-
-            using (Aes aes = Aes.Create())
-            {
-                using (MemoryStream msbase = new MemoryStream())
-                {
-                    using (CryptoStream cstr = new CryptoStream(msbase, aes.CreateEncryptor(key, iv), CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter writer = new StreamWriter(cstr))
-                        {
-                            writer.Write(content);
-                        }
-                    }
-                    res = msbase.ToArray();
-                }
-            }
-
-            return res;
-        }
-
-        /// <summary>
-        /// AES單向加密
-        /// 參考書籍 : 380個精選實例：一步步昇華成.NET Core大內高手
-        /// </summary>
-        /// <returns></returns>
-        private string AES_SingleDirectionalEncryptData()
-        {
-            string result = "";
-
-            return result;
-        }
-
+        #region AES非對稱式加密/解密
         /// <summary>
         /// 字串加密(AES非對稱式加密)
         /// </summary>
@@ -170,5 +131,48 @@ namespace Portfolio.Security
 
             return result;
         }
+        #endregion
+
+        #region AES雙向/單向加密
+        /// <summary>
+        /// AES雙向加密
+        /// 參考書籍 : 380個精選實例：一步步昇華成.NET Core大內高手
+        /// </summary>
+        /// <returns></returns>
+        private byte[] AES_BidirectionalEncryptData(byte[] key, byte[] iv, string content)
+        {
+
+            byte[] res = null;
+
+            using (Aes aes = Aes.Create())
+            {
+                using (MemoryStream msbase = new MemoryStream())
+                {
+                    using (CryptoStream cstr = new CryptoStream(msbase, aes.CreateEncryptor(key, iv), CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter writer = new StreamWriter(cstr))
+                        {
+                            writer.Write(content);
+                        }
+                    }
+                    res = msbase.ToArray();
+                }
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// AES單向加密
+        /// 參考書籍 : 380個精選實例：一步步昇華成.NET Core大內高手
+        /// </summary>
+        /// <returns></returns>
+        private string AES_SingleDirectionalEncryptData()
+        {
+            string result = "";
+
+            return result;
+        }
+        #endregion
     }
 }

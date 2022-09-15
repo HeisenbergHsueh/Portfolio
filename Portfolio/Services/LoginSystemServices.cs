@@ -10,13 +10,29 @@ namespace Portfolio.Services
 {
     public class LoginSystemServices
     {
-        private readonly PortfolioContext db = new PortfolioContext();
-        
-        private UserLogin GetUserDataByAccount(string UserAccount)
+        private readonly PortfolioContext _db;
+
+        public LoginSystemServices(PortfolioContext db)
         {
-            UserLogin UserData = new UserLogin();
+            _db = db;
+        }
+        
+        public UserLogin CheckUserDataByAccount(string UserAccount)
+        {
+            UserLogin UserData = QueryUserDataByAccount(UserAccount);
 
             return UserData;
+        }
+
+        private UserLogin QueryUserDataByAccount(string UserAccount)
+        {
+            UserLogin QueryUserDataResult = new UserLogin();
+
+            QueryUserDataResult = (from u in _db.UserLogin where u.UserAccount == UserAccount select u).FirstOrDefault();
+
+            //QueryUserDataResult = QueryUserData.FirstOrDefault(u => u.UserAccount == UserAccount);
+
+            return QueryUserDataResult;
         }
     }
 }

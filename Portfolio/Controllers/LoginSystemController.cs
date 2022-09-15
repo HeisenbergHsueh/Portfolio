@@ -67,8 +67,11 @@ namespace Portfolio.Controllers
         [ValidateAntiForgeryToken] //防止CSRF攻擊
         public IActionResult LoginComfirm(LoginViewModel model, string returnUrl)
         {
+            LoginSystemServices LSS = new LoginSystemServices(_db);
+
             //確認有無此user的帳號
-            var GetUserFromDB = GetUserDataByAccount(model.UserAccount);
+            //var GetUserFromDB = GetUserDataByAccount(model.UserAccount);
+            var GetUserFromDB = LSS.CheckUserDataByAccount(model.UserAccount);
 
             if (GetUserFromDB != null)
             {
@@ -199,6 +202,11 @@ namespace Portfolio.Controllers
         [AllowAnonymous] //任何人都可以瀏覽此頁面
         public IActionResult Register()
         {
+            //判斷是否已有帳號登入，如果有則導向首頁(Home/Index)，如果沒有則導向登入頁面(LoginSystem/Login)
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -305,11 +313,15 @@ namespace Portfolio.Controllers
         /// <returns></returns>
         public JsonResult CheckUserNameAvaiable(string name)
         {
-            var SearchUserName = from u in _db.UserLogin where u.UserAccount == name select u;
+            //var SearchUserName = from u in _db.UserLogin where u.UserAccount == name select u;
+
+            LoginSystemServices LSS = new LoginSystemServices(_db);
+
+            var SearchUserName = LSS.CheckUserDataByAccount(name);
 
             bool IsExist = false;
 
-            if (SearchUserName.Count() > 0)
+            if (SearchUserName != null)
             {
                 IsExist = true;
             }
@@ -370,7 +382,7 @@ namespace Portfolio.Controllers
         /// </summary>
         /// <param name="UserAccount">使用者帳號</param>
         /// <returns></returns>
-        private UserLogin GetUserDataByAccount(string UserAccount)
+        public UserLogin GetUserDataByAccount(string UserAccount)
         {
             UserLogin UserData = new UserLogin();
 

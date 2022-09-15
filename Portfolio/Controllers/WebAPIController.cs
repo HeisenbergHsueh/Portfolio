@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 using Portfolio.Data;
+using Portfolio.Services;
 
 
 // 參考資料(1) : https://ithelp.ithome.com.tw/users/20107452/ironman/4560
@@ -38,23 +39,26 @@ namespace Portfolio.Controllers
         [HttpGet("{UserAccount}/{AuthCode}")]
         public IActionResult EmailValidation(string UserAccount, string AuthCode)
         {
+            LoginSystemServices LSS = new LoginSystemServices(_db);
+
             //確認有無此user的帳號
-            var GetUserFromDB = from u in _db.UserLogin where u.UserAccount == UserAccount select u;
+            //var GetUserFromDB = from u in _db.UserLogin where u.UserAccount == UserAccount select u;
+            var GetUserFromDB = LSS.CheckUserDataByAccount(UserAccount);
 
             if (GetUserFromDB != null)
             {
                 //如果有則回傳該筆user的資料
-                var UserData = GetUserFromDB.FirstOrDefault(u => u.UserAccount == UserAccount);
+                //var UserData = GetUserFromDB.FirstOrDefault(u => u.UserAccount == UserAccount);
 
-                if (UserData.AuthCode == AuthCode)
+                if (GetUserFromDB.AuthCode == AuthCode)
                 {
-                    if (UserData.IsEmailAuthenticated != 0)
+                    if (GetUserFromDB.IsEmailAuthenticated != 0)
                     {
                         //若驗證碼比對成功，則將DB中的IsEmailAuthenticated由1(false)改成0(True)
-                        UserData.IsEmailAuthenticated = 0;
+                        GetUserFromDB.IsEmailAuthenticated = 0;
 
                         //然後使用Update，更新UserData的資料，然後再存回DB
-                        _db.Update(UserData);
+                        _db.Update(GetUserFromDB);
                         _db.SaveChanges();
 
                         TempData["Message"] = "Authentication Sucessful";

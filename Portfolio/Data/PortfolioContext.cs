@@ -12,10 +12,6 @@ namespace Portfolio.Data
 {
     public partial class PortfolioContext : DbContext
     {
-        public PortfolioContext()
-        {
-        }
-
         public PortfolioContext(DbContextOptions<PortfolioContext> options)
             : base(options)
         {
