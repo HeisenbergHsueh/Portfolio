@@ -63,8 +63,12 @@ namespace Portfolio.Controllers
             return View();
         }
 
-        [Authorize]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Statement()
         {
             return View();
         }

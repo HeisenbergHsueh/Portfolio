@@ -8,18 +8,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 //加解密
 using Portfolio.Security;
-
 //連接DB
 using Portfolio.Data;
 using Microsoft.EntityFrameworkCore;
-
 //cookie認證、授權
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+//多國語系
+using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 
 namespace Portfolio
 {
@@ -81,6 +83,34 @@ namespace Portfolio
                 });
             });
             #endregion
+
+            #region 多國語系設定
+            //設定讀取資源檔(.resx)的路徑
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            //加入讓View、Model也可使用多國語系的語法
+            services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+            //宣告一份CultureInfo的清單
+            var supportedCultures = new[]
+            {
+                new CultureInfo("zh-TW"),
+                new CultureInfo("en-US")
+            };
+            //
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+
+                options.DefaultRequestCulture = new RequestCulture(culture: "zh-TW", uiCulture: "zh-TW");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders.Clear();
+                options.AddInitialRequestCultureProvider(new RouteDataRequestCultureProvider()
+                {
+                    Options = options,
+                    RouteDataStringKey = "culture",
+                    UIRouteDataStringKey = "culture"
+                });
+            });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,11 +140,15 @@ namespace Portfolio
             app.UseAuthorization();
             #endregion
 
+            #region 多國語系設定
+            app.UseRequestLocalization();
+            #endregion
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{culture=zh-TW}/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

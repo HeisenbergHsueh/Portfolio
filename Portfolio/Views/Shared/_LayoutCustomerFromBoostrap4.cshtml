@@ -1,0 +1,94 @@
+﻿@{ 
+    ViewData["WebSiteTitle"] = Localizer["WebSiteTitle"];
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["WebSiteTitle"]</title>
+    <link rel="icon" type="image/x-icon" href="~/Images/H_icon.jpg" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    @* RenderSection的用途是讓軟體工程師可以從View中將js、css檔案或一段程式碼放到Layout的區塊 *@
+    @* 舉例來說，假設在Home/Index，create了一個區塊(CSS)，並在此區塊中，引用了一個style.css的檔案，最後ASP.net core的網站編譯時 *@
+    @* 則會將引用的style.css放置到 @RenderSection("CSS", required: false)所在的位置，所以使用chrome的開發人員檢視工具*@
+    @* 就會看到引用style.css的code出現在head tag中，下方的@RenderSection("Scripts", required: false)也是同樣用途*@
+    @* 只不過一個取名CSS，用來放CSS檔案，一個取名Scripts，用來放js檔案 *@
+    @* 參考資料 : https://ithelp.ithome.com.tw/articles/10159990 *@
+    @RenderSection("CSS", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <span class="navbar-brand">
+                <img src="~/Images/H_icon.jpg" width="30" height="30">
+                @ViewData["WebSiteTitle"]
+            </span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">首頁</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                            資安相關
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">防毒文件</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">防毒工具</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                            駐廠相關
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">建案系統</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">請假系統</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">聯絡窗口</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="LoginSystem" asp-action="Logout">登出</a>
+                        </li>
+
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white border" asp-controller="LoginSystem" asp-action="Login">登入</a>
+                        </li>
+
+                    }
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @* @RenderBody()的用途與@RenderSection()類似，主要是將View的內容放進來 *@
+            @* 當網站開始編譯之後，首先會先渲染_ViewStart.cshtml的部分，接著會渲染View(ex.Home/Index)的部分，最後才會把Layout的內容渲染進來 *@
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>
