@@ -117,7 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="WebSiteTitle" xml:space="preserve">
+  <data name="Website_contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Website_documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="Website_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Website_index" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Website_LoginSystem_Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Website_LoginSystem_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Website_OnsiteCaseSystem" xml:space="preserve">
+    <value>Onsite</value>
+  </data>
+  <data name="Website_OnsiteCaseSystem_Index" xml:space="preserve">
+    <value>CaseSystem</value>
+  </data>
+  <data name="Website_security" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="Website_title" xml:space="preserve">
     <value>HeisenbergHsueh Portfolio</value>
+  </data>
+  <data name="Website_tools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Website_zh" xml:space="preserve">
+    <value>Chinese</value>
   </data>
 </root>

@@ -1,5 +1,47 @@
 ﻿@{ 
-    ViewData["WebSiteTitle"] = Localizer["WebSiteTitle"];
+    #region 設定中英切換的按鈕所顯示的連結為當下user所在的頁面
+    var request = Context.Request;
+    string UrlPath = request.Path.ToString();
+    string ChineseMode = "";
+    string EnglishMode = "";
+
+    if(UrlPath.Contains("zh-TW"))
+    {
+        ChineseMode = $"{request.Scheme}://{request.Host}{UrlPath}";
+        var SwitchToEnglishPath = UrlPath.Replace("zh-TW", "en-US");
+        EnglishMode = $"{request.Scheme}://{request.Host}{SwitchToEnglishPath}";
+    }
+    else if (UrlPath.Contains("en-US"))
+    {
+        EnglishMode = $"{request.Scheme}://{request.Host}{UrlPath}";
+        var SwitchToChinesePath = UrlPath.Replace("en-US", "zh-TW");
+        ChineseMode = $"{request.Scheme}://{request.Host}{SwitchToChinesePath}";
+    }
+    else
+    {
+        ChineseMode = $"{request.Scheme}://{request.Host}/zh-TW";
+        EnglishMode = $"{request.Scheme}://{request.Host}/en-US";
+    }
+    #endregion
+
+    #region 使用資源檔做語系切換，此頁面使用的資源檔為 : _Layout.zh-TW.resx、_Layout.en-US.resx
+    ViewData["Website_title"] = Localizer["Website_title"];
+    ViewData["Website_zh"] = Localizer["Website_zh"];
+    ViewData["Website_en"] = Localizer["Website_en"];
+
+    ViewData["Website_index"] = Localizer["Website_index"];
+    ViewData["Website_security"] = Localizer["Website_security"];
+    ViewData["Website_documents"] = Localizer["Website_documents"];
+    ViewData["Website_tools"] = Localizer["Website_tools"];
+
+    ViewData["Website_OnsiteCaseSystem"] = Localizer["Website_OnsiteCaseSystem"];
+    ViewData["Website_OnsiteCaseSystem_Index"] = Localizer["Website_OnsiteCaseSystem_Index"];
+
+    ViewData["Website_contact"] = Localizer["Website_contact"];
+
+    ViewData["Website_LoginSystem_Login"] = Localizer["Website_LoginSystem_Login"];
+    ViewData["Website_LoginSystem_Logout"] = Localizer["Website_LoginSystem_Logout"];
+    #endregion
 }
 
 <!DOCTYPE html>
@@ -7,10 +49,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["WebSiteTitle"]</title>
+    <title>@ViewData["Website_title"]</title>
     <link rel="icon" type="image/x-icon" href="~/Images/H_icon.jpg" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     @* RenderSection的用途是讓軟體工程師可以從View中將js、css檔案或一段程式碼放到Layout的區塊 *@
     @* 舉例來說，假設在Home/Index，create了一個區塊(CSS)，並在此區塊中，引用了一個style.css的檔案，最後ASP.net core的網站編譯時 *@
     @* 則會將引用的style.css放置到 @RenderSection("CSS", required: false)所在的位置，所以使用chrome的開發人員檢視工具*@
@@ -18,8 +60,8 @@
     @* 只不過一個取名CSS，用來放CSS檔案，一個取名Scripts，用來放js檔案 *@
     @* 參考資料 : https://ithelp.ithome.com.tw/articles/10159990 *@
     @RenderSection("CSS", required: false)
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </head>
 <body>
@@ -27,7 +69,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <span class="navbar-brand">
                 <img src="~/Images/H_icon.jpg" width="30" height="30">
-                @ViewData["WebSiteTitle"]
+                @ViewData["Website_title"]
             </span>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
                 <span class="navbar-toggler-icon"></span>
@@ -36,48 +78,51 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">首頁</a>
+                        <a class="nav-link text-white" asp-controller="OnsiteCaseSystem" asp-action="Index">@ViewData["Website_index"]</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                            資安相關
+                            @ViewData["Website_security"]
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">防毒文件</a>
+                            <a class="dropdown-item" href="#">@ViewData["Website_documents"]</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">防毒工具</a>
+                            <a class="dropdown-item" href="#">@ViewData["Website_tools"]</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                            駐廠相關
+                            @ViewData["Website_OnsiteCaseSystem"]
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">建案系統</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">請假系統</a>
+                            <a class="dropdown-item" href="#">@ViewData["Website_OnsiteCaseSystem_Index"]</a>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">聯絡窗口</a>
+                        <a class="nav-link text-white" href="#">@ViewData["Website_contact"]</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white border mx-1" href="@EnglishMode">@ViewData["Website_en"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white border mx-1" href="@ChineseMode">@ViewData["Website_zh"]</a>
+                    </li>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="LoginSystem" asp-action="Logout">登出</a>
+                            <a class="nav-link text-white border mx-1" asp-controller="LoginSystem" asp-action="Logout">@ViewData["Website_LoginSystem_Logout"]</a>
                         </li>
 
                     }
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-white border" asp-controller="LoginSystem" asp-action="Login">登入</a>
+                            <a class="nav-link text-white border mx-1" asp-controller="LoginSystem" asp-action="Login">@ViewData["Website_LoginSystem_Login"]</a>
                         </li>
 
                     }
-
                 </ul>
             </div>
         </nav>

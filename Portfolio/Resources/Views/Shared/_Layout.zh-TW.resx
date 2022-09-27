@@ -117,40 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Website_contact" xml:space="preserve">
-    <value>聯絡窗口</value>
-  </data>
-  <data name="Website_documents" xml:space="preserve">
-    <value>防毒文件</value>
-  </data>
-  <data name="Website_en" xml:space="preserve">
-    <value>English</value>
-  </data>
-  <data name="Website_index" xml:space="preserve">
+  <data name="Layout_Home_Index" xml:space="preserve">
     <value>首頁</value>
   </data>
-  <data name="Website_LoginSystem_Login" xml:space="preserve">
+  <data name="Layout_Home_Privacy" xml:space="preserve">
+    <value>隱私權</value>
+  </data>
+  <data name="Layout_LoginSystem_Authorization" xml:space="preserve">
+    <value>授權相關</value>
+  </data>
+  <data name="Layout_LoginSystem_Login" xml:space="preserve">
     <value>登入</value>
   </data>
-  <data name="Website_LoginSystem_Logout" xml:space="preserve">
+  <data name="Layout_LoginSystem_Logout" xml:space="preserve">
     <value>登出</value>
   </data>
-  <data name="Website_OnsiteCaseSystem" xml:space="preserve">
-    <value>駐廠相關</value>
+  <data name="Layout_LoginSystem_Register" xml:space="preserve">
+    <value>註冊</value>
   </data>
-  <data name="Website_OnsiteCaseSystem_Index" xml:space="preserve">
-    <value>建案系統</value>
-  </data>
-  <data name="Website_security" xml:space="preserve">
-    <value>資安相關</value>
-  </data>
-  <data name="Website_title" xml:space="preserve">
-    <value>HeisenbergHsueh 作品集網站</value>
-  </data>
-  <data name="Website_tools" xml:space="preserve">
-    <value>防毒工具</value>
-  </data>
-  <data name="Website_zh" xml:space="preserve">
-    <value>繁中</value>
+  <data name="Layout_Title" xml:space="preserve">
+    <value>HeisenbergHsueh 作品集</value>
   </data>
 </root>

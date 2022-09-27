@@ -1,11 +1,12 @@
 ﻿@model Portfolio.Models.LoginSystem.LoginViewModel
 
 @{
+    Layout = "/Views/Shared/_LayoutCustomerFromBoostrap4.cshtml";
     ViewData["Title"] = "UserLogin";
     var returnUrl = Context.Request.Query["ReturnUrl"];
 }
 
-<h1 class="text-center">User Login</h1>
+<h1 class="text-center mt-5">User Login</h1>
 
 <hr />
 <div class="row">
