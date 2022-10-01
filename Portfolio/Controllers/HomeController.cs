@@ -33,6 +33,12 @@ namespace Portfolio.Controllers
             _config = config;
         }
 
+
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             //string wwwroot_path = _env.WebRootPath.ToString();

@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
     <Folder Include="Models\OnsiteCaseSystem\" />
-    <Folder Include="wwwroot\Images\" />
+    <Folder Include="wwwroot\Images\Profile\" />
+    <Folder Include="wwwroot\lib\bootstrap5\" />
   </ItemGroup>
 
   <ItemGroup>

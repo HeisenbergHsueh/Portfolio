@@ -1,0 +1,97 @@
+﻿@{ 
+    //使用資源檔做語系切換，此頁面使用的資源檔為 : _Layout.zh-TW.resx、_Layout.en-US.resx
+    ViewData["Layout_Title"] = Localizer["Layout_Title"];
+
+    ViewData["Layout_Home_Index"] = Localizer["Layout_Home_Index"];
+    ViewData["Layout_Home_Privacy"] = Localizer["Layout_Home_Privacy"];
+
+    ViewData["Layout_LoginSystem_Register"] = Localizer["Layout_LoginSystem_Register"];
+    ViewData["Layout_LoginSystem_Login"] = Localizer["Layout_LoginSystem_Login"];
+    ViewData["Layout_LoginSystem_Logout"] = Localizer["Layout_LoginSystem_Logout"];
+
+    ViewData["Layout_LoginSystem_Authorization"] = Localizer["Layout_LoginSystem_Authorization"];
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Layout_Title"] - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Layout_Title"]</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav mr-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark">Hi @User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="LoginSystem" asp-action="Logout">@ViewData["Layout_LoginSystem_Logout"]</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="LoginSystem" asp-action="Login">@ViewData["Layout_LoginSystem_Login"]</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Layout_Home_Index"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="LoginSystem" asp-action="Register">@ViewData["Layout_LoginSystem_Register"]</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                                @ViewData["Layout_LoginSystem_Authorization"]
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="LoginSystem" asp-action="AuthPage">AuthPage</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="LoginSystem" asp-action="UserPage">UserPage</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="LoginSystem" asp-action="AdministratorPage">AdministratorPage</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="LoginSystem" asp-action="MultipleRolePage">MultipleRolePage</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="LoginSystem" asp-action="IT_could_be_browser_Page">IT</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - @ViewData["Layout_Title"] - <a asp-area="" asp-controller="Home" asp-action="Privacy">@ViewData["Layout_Home_Privacy"]</a>
+        </div>
+    </footer>
+</body>
+</html>

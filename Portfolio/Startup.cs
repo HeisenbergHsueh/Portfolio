@@ -221,7 +221,7 @@ namespace Portfolio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{culture=zh-TW}/{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{culture=zh-TW}/{controller=Home}/{action=Profile}/{id?}");
             });
         }
     }
