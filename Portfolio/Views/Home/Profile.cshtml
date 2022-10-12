@@ -7,86 +7,61 @@
         @@media (max-width: 1200px) {
             .lower1200px_dnone {
                 display: none;
+            }          
+        }
+
+        @@media (min-width: 1200px) {
+            .adjust_test_font_size_rem {
+                font-size: 3.0rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .adjust_test_font_size_rem, .adjust_test_font_size_rem_2 {
+                font-size: 2.0rem;
+            }
+        }
+
+        @@media (max-width: 520px) {
+            .adjust_test_font_size_rem, .adjust_test_font_size_rem_2 {
+                font-size: 1.5rem;
             }
         }
     </style>
 }
 
 <div class="container">
-    <header class="blog-header py-3">
+    <header class="blog-header py-1">
         <div class="row flex-nowrap justify-content-between align-items-center">
-            <div class="col-4 pt-1">
-                <a class="text-muted" href="#">Subscribe</a>
-            </div>
-            <div class="col-4 text-center">
-                <a class="blog-header-logo text-dark" href="#">Large</a>
-            </div>
-            <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="text-muted" href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5" /><path d="M21 21l-5.2-5.2" /></svg>
-                </a>
-                <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
+            <div class="col-12">
+                <nav class="navbar navbar-light bg-white pl-0">
+                    <a class="navbar navbar-brand pl-0 " href="#">
+                        <img class="" src="~/Images/H_icon.jpg" width="40" height="40">
+                        Heisenberg Hsueh 作品集網站
+                    </a>                   
+                </nav>               
             </div>
         </div>
     </header>
 
-    <div class="nav-scroller py-1 mb-2">
-        <nav class="nav d-flex justify-content-between">
-            <a class="p-2 text-muted" href="#">World</a>
-            <a class="p-2 text-muted" href="#">U.S.</a>
-            <a class="p-2 text-muted" href="#">Technology</a>
-            <a class="p-2 text-muted" href="#">Design</a>
-            <a class="p-2 text-muted" href="#">Culture</a>
-            <a class="p-2 text-muted" href="#">Business</a>
-            <a class="p-2 text-muted" href="#">Politics</a>
-            <a class="p-2 text-muted" href="#">Opinion</a>
-            <a class="p-2 text-muted" href="#">Science</a>
-            <a class="p-2 text-muted" href="#">Health</a>
-            <a class="p-2 text-muted" href="#">Style</a>
-            <a class="p-2 text-muted" href="#">Travel</a>
-        </nav>
-    </div>
-
     <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
-        <div class="row">
-            <div class="col-md-10">
-                <h1 class="display-4 font-italic">Title of a longer featured blog post</h1>
-                <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about <br /> what’s most interesting in this post’s contents.</p>
-                <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+        <div class="row justify-content-md-center align-content-md-center">
+            <div class="d-xl-none col-sm-12">
+                <img src="~/Images/Profile/profile.jpg" class="mx-auto d-block" width="200" height="250" />
             </div>
-            <div class="col-md-2">
-                <img src="~/Images/Profile/profile.jpg" class="float-right lower1200px_dnone" width="200" height="250" />
+            <div class="col-md-12 col-lg-9">
+                <div class="h1 adjust_test_font_size_rem">您好，我是Heisenberg Hsueh</div>
+                <div class="h2 adjust_test_font_size_rem_2">關於我</div>
+                <ol>
+                    <li class="h5">一位從化學領域轉行到資訊領域的後端工程師</li>
+                    <li class="h5">主要使用的語言為C#、Python、JavaScript、PowerShell、AutoIt、BatchScript，主要使用的框架為ASP.NET、Bootstrap 4、jQuery</li>
+                    <li class="h5">過去5年專職於資安領域相關的監控系統、自動化工具、駐廠人員案件管理系統的開發</li>
+                    <li class="h5">我的程式語言主要是透過書籍、線上課程以及自己花了許多時間練習自學而成</li>
+                    <li class="h5">目前正在就讀中央大學資管所碩專班，致力學習AI、機器學習、資料探勘、IOT等知識</li>
+                </ol>
             </div>
-        </div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-6">
-            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <strong class="d-inline-block mb-2 text-primary">World</strong>
-                    <h3 class="mb-0">Featured post</h3>
-                    <div class="mb-1 text-muted">Nov 12</div>
-                    <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="stretched-link">Continue reading</a>
-                </div>
-                <div class="col-auto d-none d-lg-block">
-                    <img src="~/Images/Profile/profile.jpg" width="200" height="250"/>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <strong class="d-inline-block mb-2 text-success">Design</strong>
-                    <h3 class="mb-0">Post title</h3>
-                    <div class="mb-1 text-muted">Nov 11</div>
-                    <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="stretched-link">Continue reading</a>
-                </div>
-                <div class="col-auto d-none d-lg-block">
-                    <img src="~/Images/Profile/profile.jpg" width="200" height="250" />
-                </div>
+            <div class="col-lg-3 lower1200px_dnone">
+                <img src="~/Images/Profile/profile.jpg" class="float-right" width="200" height="250" />
             </div>
         </div>
     </div>
@@ -94,72 +69,90 @@
 
 <main role="main" class="container">
     <div class="row">
-        <div class="col-md-8 blog-main">
-            <h3 class="pb-4 mb-4 font-italic border-bottom">
-                From the Firehose
-            </h3>
-
+        <div class="col-md-12 blog-main">
             <div class="blog-post">
-                <h2 class="blog-post-title">Sample blog post</h2>
-                <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
-
-                <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
+                <h4 class="blog-post-title">工作內容與成果報告</h4>
                 <hr>
-                <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
-                <blockquote>
-                    <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                </blockquote>
-                <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-                <h2>Heading</h2>
-                <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                <h3>Sub-heading</h3>
-                <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-                <pre><code>Example code block</code></pre>
-                <p>Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
-                <h3>Sub-heading</h3>
-                <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                <ul>
-                    <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li>
-                    <li>Donec id elit non mi porta gravida at eget metus.</li>
-                    <li>Nulla vitae elit libero, a pharetra augue.</li>
-                </ul>
-                <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
+                <p>
+                    協助客戶的IT單位導入資安監控、升級、重裝等自動化工具。<br />
+                    客戶端約有20萬台左右的電腦，且每一台電腦上都裝有趨勢科技的OfficeScan/Apex One防毒軟體。<br />
+                    <br />
+                    使用AutoIt、C#、Python、PowerShell、ASP.NET Core開發了一套針對該防毒軟體進行偵測、更新、升級、重裝的工具。<br />
+                    該工具會負責去蒐集有關防毒軟體運行時的機碼值、服務狀態的數值，或著會去撈取防毒軟體安裝目錄下的log、wiwndows的event log，
+                    然後進一步確認網路狀態(例如 : 跟Server溝通所使用port狀態是否正常)、病毒引擎、病毒碼的版本是否為最新、Windows憑證是否過期、硬碟空間是否足夠來更新病毒碼，
+                    而當發現問題的時候，工具會嘗試使用多種方式進行修復。
+                    <br />
+                    <br />
+                    此工具的貢獻主要有以下幾點 : <br>
+                    1.讓客戶公司的Client防毒良率從<strong class="text-danger">95%(2019年統計數字)提升到99.9%(2022年9月統計數字)</strong><br />
+                    2.以往人工更新/升級一台Client的防毒軟體，所需花費的時間平均為30分鐘左右，而使用此工具後，由於全程皆是自動化處理，因此省下了<strong class="text-danger">幾萬台Client * 30分鐘</strong>的時間及人力成本。<br />
+                    3.工具中有加入call API的功能，當工具進行修復更新完成時，無論成功或失敗，皆會透過API回傳數據到我所建立的駐場人員建案系統。藉由建案系統，我們可以蒐集非常非常多的資料，進行分析歸納，進一步改進自動化工具的效能，以確保防毒軟體隨時都是最好的狀態。
+                </p>
+                
+
+            </div>            
+        </div>
+        <div class="col-md-8 blog-main">
+            <div class="blog-post">
+                <h4 class="blog-post-title">作品集</h4>
+                <hr>
+                <h4>登入系統</h4>
                 <ol>
-                    <li>Vestibulum id ligula porta felis euismod semper.</li>
-                    <li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li>
-                    <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
+                    <li>使用C#、ASP.NET Core MVC、JavaScript、jQuery、Bootstrap 4進行開發</li>
+                    <li>註冊、密碼hash加密(hash+salt)、Email驗證(透過API進行驗證)</li>
+                    <li>登入(cookie驗證、角色授權)、登出</li>
+                    <li>忘記密碼、重設密碼</li>
+                    <li>cookie驗證(設定cookie的時效、是否persist、使用policy進行授權)</li>
+                    <li>角色授權-透過設定不同角色給予登入者不同的使用權限</li>
+                    <li>後台管理系統-對註冊於此網站的帳號進行角色及policy添加/刪減、基本資料維護</li>
                 </ol>
-                <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>
-            </div><!-- /.blog-post -->
-
-            <nav class="blog-pagination">
-                <a class="btn btn-outline-primary" href="#">Older</a>
-                <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-            </nav>
-
-        </div><!-- /.blog-main -->
+                <h4>駐廠人員建案系統</h4>
+                <ol>
+                    <li>使用C#、ASP.NET Core MVC、JavaScript、jQuery、Bootstrap 4進行開發</li>
+                    <li>基本的CRUD功能</li>
+                    <li>分頁、排序、多條件搜尋</li>
+                    <li>Excel匯出案件紀錄(可進行完多條件過濾之後再匯出)、匯入Excel建案、更新案件之功能</li>
+                    <li>駐廠人員KPI圖表</li>
+                </ol>
+                <h4>資安自動化工具與腳本撰寫</h4>
+                <ol>
+                    <li>使用AutoIt、VB.NET、Batch Script、PowerShell進行開發</li>
+                    <li>主要針對防毒軟體的機碼值(registry key)、服務狀態、安裝目錄下的檔案進行資料分析並制定各種更新、升級、修復策略</li>
+                    <li>更新策略 : 防毒軟體的病毒碼，每天都會進行更新，但時常會因為服務、網路問題、Windows問題而導致更新出現異常，而自動化工具會在確認完這些問題之後，進行修復並做更新</li>
+                    <li>升級策略 : 防毒軟體每年需要更新1-2次patch，以來用規避重大漏洞所帶來的隱藏威脅，而以往採用人力更新patch，一台電腦平均會花費30分鐘，採用自動化工具後，可以透過SCCM、SCOM、AD的GPO進行自動化升級，或User直接下載地端工具Click兩下進行防毒軟體的升級</li>
+                    <li>修復策略 : 當偵測到防毒軟體機碼值異常、服務狀態異常、病毒引擎、病毒碼版本異常時進行自動化修復</li>
+                </ol>
+                <h4>資安監控系統</h4>
+                <ol>
+                    <li>使用Power BI、ASP.NET Core MVC進行串接</li>
+                    <li>在Client端上，會放置一支地端工具，負責每天紀錄Client的通訊port、服務狀態、病毒碼版本是否正常</li>
+                    <li>地端工具會將資訊透過API傳回ASP.NET Core MVC的網站</li>
+                    <li>接著再使用Power BI去抓取DB中的資料拉成圖表，並在Power BI中設定資料警示，當狀態出現問題的時候，會傳送mail給防毒軟體負責人&駐廠人員</li>
+                </ol>
+            </div>
+        </div>
 
         <aside class="col-md-4 blog-sidebar">
             <div class="p-4 mb-3 bg-light rounded">
-                <h4 class="font-italic">About</h4>
-                <p class="mb-0">Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+                <h4 class="font-italic">共勉之</h4>
+                <p class="mb-0">人生是一段長期而持續的累積過程，絕不會因為單一事件而有劇烈起伏</p>
+                <em>by. 清大教授 彭明輝</em>
+                <br /><br />
+                <p class="mb-0">努力! 持之以恆的努力!</p>
+                <em>by. 自己XD</em>
             </div>
 
             <div class="p-4">
-                <h4 class="font-italic">Archives</h4>
+                <h4 class="font-italic">Language & Framework</h4>
                 <ol class="list-unstyled mb-0">
-                    <li><a href="#">March 2014</a></li>
-                    <li><a href="#">February 2014</a></li>
-                    <li><a href="#">January 2014</a></li>
-                    <li><a href="#">December 2013</a></li>
-                    <li><a href="#">November 2013</a></li>
-                    <li><a href="#">October 2013</a></li>
-                    <li><a href="#">September 2013</a></li>
-                    <li><a href="#">August 2013</a></li>
-                    <li><a href="#">July 2013</a></li>
-                    <li><a href="#">June 2013</a></li>
-                    <li><a href="#">May 2013</a></li>
-                    <li><a href="#">April 2013</a></li>
+                    <li><a href="#">C#</a></li>
+                    <li><a href="#">Python</a></li>
+                    <li><a href="#">JavaScript、jQuery</a></li>
+                    <li><a href="#">PowerShell、BatchScript</a></li>
+                    <li><a href="#">AutoIt</a></li>
+                    <li><a href="#">ASP.NET Core MVC</a></li>
+                    <li><a href="#">Bootstrap 4</a></li>
+                    <li><a href="#">Git、Github、Gitlab</a></li>
                 </ol>
             </div>
 
@@ -167,12 +160,12 @@
                 <h4 class="font-italic">Elsewhere</h4>
                 <ol class="list-unstyled">
                     <li><a href="#">GitHub</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">CakeResume</a></li>
                 </ol>
             </div>
-        </aside><!-- /.blog-sidebar -->
+        </aside>
 
-    </div><!-- /.row -->
+    </div>
 
-</main><!-- /.container -->
+</main>

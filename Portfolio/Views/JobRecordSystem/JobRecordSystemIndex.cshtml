@@ -1,0 +1,190 @@
+﻿@model Portfolio.Models.JobRecordSystem.JobRecordsViewModel
+
+@{
+
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+
+        @*<p>
+            <a asp-action="Create" class="btn btn-primary">建立新案件</a>
+        </p>*@
+
+        @using (Html.BeginForm("JobRecordSystemIndex", "JobRecordSystem", FormMethod.Get, new { @class = "mb-5" }))
+        {
+            <div class="row mx-auto justify-content-start align-items-start mt-3">
+                <div class="form-group mx-2">
+                    <label class="font-weight-bold" for="CaseId">案件編號</label>
+                    @Html.TextBox("CaseId", ViewData["CaseId"] as string, htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group mx-2">
+                    <label class="font-weight-bold" for="Status">狀態</label>
+                    @*
+                    方法一.
+                    @Html.TextBox("Status", ViewData["Status"] as string, htmlAttributes: new { @class = "form-control" })
+                    缺點 : 需要使用者自行輸入關鍵字，非常麻煩又不實用
+                    *@
+                    @*
+                    方法二.
+                    @Html.DropDownListFor(j => j.jobsrecordStatus.StatusName, Model.StatusSelectListItem, "請選擇案件狀態", htmlAttributes: new { @class = "form-control", name = "Status", id = "Status" })
+                    輸出成 HTML code的時候，name的部分會顯示為 name = "jobsrecordStatus.StatusName" 導致選擇的項目的 value 無法被正確導回後端
+                    且修改 htmlAttributes 強制讓 name = "Status" 無效，而後查詢資料才發現，從MVC 4開始就不行，應該是微軟的bug
+                    參考資料 : https://stackoverflow.com/questions/8668889/can-i-change-the-html-name-generated-by-html-dropdownlistfor
+
+                    *@
+                    @*
+                    方法三.
+                    可正確讓 name = "Status"
+                    缺點 : (1)並非是強型別，變數字串的部分要特別注意有無拼寫錯誤、(2)需做兩次轉換型別
+                    (IEnumerable<SelectListItem>)
+                    *@
+                    @Html.DropDownList("Status", ViewBag.JobRecordsStatusItemList, "請選擇案件狀態", new { @class = "form-control" })
+                    @*<select class="form-control" id="Status" name="Status">
+                        <option value="">請選擇案件狀態</option>
+                        @foreach(var item in (IEnumerable<SelectListItem>)ViewBag.JobRecordsStatusItemList)
+                        {
+                            if(item == ViewData["Status"])
+                            {
+                                <option class="text-danger" value="@item.Value" selected="selected">@item.Text</option>
+                            }
+                            <option class="text-danger" value="@item.Value">@item.Text</option>
+                        }
+                    </select>*@
+                </div>
+                <div class="form-group mx-2">
+                    <label class="font-weight-bold" for="Status">廠區</label>
+                    @Html.DropDownList("Site", ViewBag.JobRecordsSiteItemList, "請選擇報案區域", new { @class = "form-control" })
+                </div>
+                <div class="form-group mx-2">
+                    <label class="font-weight-bold" for="Status">處理人員</label>
+                    @Html.DropDownList("OwnerName", ViewBag.JobRecordsOwnerItemList, "請選擇處理人員", new { @class = "form-control" })
+                </div>
+                <div class="form-group mx-2">
+                    <label class="font-weight-bold" for="Status">報案人員</label>
+                    @Html.TextBox("UserName", ViewData["UserName"] as string, htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group mx-2">
+                    <label class="font-weight-bold" for="Status">電腦名稱</label>
+                    @Html.TextBox("HostName", ViewData["HostName"] as string, htmlAttributes: new { @class = "form-control" })
+                </div>
+
+
+            </div>
+            <div class="row mx-auto justify-content-start align-items-start">
+                <button type="submit" class="btn btn-success mx-2">搜尋</button>
+                @Html.ActionLink("清除搜尋結果", "JobRecordSystemIndex", "JobRecordSystem", new { }, new { @class = "btn btn-warning mx-2" })
+                @*@Html.ActionLink("匯出日誌", "JobsRecordExport", "JobsRecord", null, new { @class = "btn btn-primary ml-3" })*@
+            </div>
+        }
+
+        <table class="table">
+            <thead>
+                <tr class="text-center h5">
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().CaseId)*@
+                        案件編號
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().CaseStatus)*@
+                        案件狀態
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().BuildDate)*@
+                        建案日期
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().ClosedDate)*@
+                        結案日期
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().UpdateDate)*@
+                        更新日期
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().Location)*@
+                        廠區
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().UserName)*@
+                        報案人員
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().OnsiteName)*@
+                        駐廠人員
+                    </th>
+                    <th class="border-bottom-0">
+                        @*@Html.DisplayNameFor(model => model.JobRecordsPagedList.First().HostName)*@
+                        電腦名稱
+                    </th>
+                    <th class="border-bottom-0">
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.JobRecordsPagedList)
+                {
+                    <tr class="text-center">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CaseId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CaseStatus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BuildDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClosedDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UpdateDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Location)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OnsiteName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HostName)
+                        </td>
+                        <td>
+                            @Html.ActionLink("內容", "Details", new { id = item.CaseId }, new { @class = "btn btn-success" }) |
+                            @if(item.CaseIsClosed == "1")
+                            {
+                                @Html.ActionLink("編輯", "Edit", new { id = item.CaseId }, new { @class = "btn btn-primary disabled" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("編輯", "Edit", new { id = item.CaseId }, new { @class = "btn btn-primary" })
+                            }
+                            |
+                            @Html.ActionLink("刪除", "Delete", new { id = item.CaseId }, new { @class = "btn btn-danger" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @Html.PagedListPager((IPagedList)Model.JobRecordsPagedList, page => Url.Action("JobRecordSystemIndex", new { page, Id = ViewData["Id"], Status = ViewData["Status"], Site = ViewData["Site"], OwnerName = ViewData["OwnerName"], UserName = ViewData["UserName"], HostName = ViewData["HostName"], pageSize = ViewData["PageSize"] }),
+       new PagedListRenderOptions
+       {
+         LinkToFirstPageFormat = "首頁",
+         LinkToNextPageFormat = "下一頁",
+         LinkToPreviousPageFormat = "上一頁",
+         LinkToLastPageFormat = "末頁",
+         MaximumPageNumbersToDisplay = 7,
+         DisplayItemSliceAndTotal = false,
+         UlElementClasses = new string[] { "pagination" },
+         LiElementClasses = new string[] { "page-item" },
+         PageClasses = new string[] { "page-link" }
+       })
+
+    </div>
+</div>
+

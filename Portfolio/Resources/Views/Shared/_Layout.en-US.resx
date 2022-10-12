@@ -129,6 +129,9 @@
   <data name="Website_index" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="Website_JobRecordSystem_Index" xml:space="preserve">
+    <value>Case System(old)</value>
+  </data>
   <data name="Website_LoginSystem_Login" xml:space="preserve">
     <value>Login</value>
   </data>
@@ -139,7 +142,7 @@
     <value>Onsite</value>
   </data>
   <data name="Website_OnsiteCaseSystem_Index" xml:space="preserve">
-    <value>CaseSystem</value>
+    <value>Case System</value>
   </data>
   <data name="Website_security" xml:space="preserve">
     <value>Security</value>

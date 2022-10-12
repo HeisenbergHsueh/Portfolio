@@ -129,6 +129,9 @@
   <data name="Website_index" xml:space="preserve">
     <value>首頁</value>
   </data>
+  <data name="Website_JobRecordSystem_Index" xml:space="preserve">
+    <value>建案系統(舊版)</value>
+  </data>
   <data name="Website_LoginSystem_Login" xml:space="preserve">
     <value>登入</value>
   </data>

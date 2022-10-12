@@ -36,6 +36,7 @@
 
     ViewData["Website_OnsiteCaseSystem"] = Localizer["Website_OnsiteCaseSystem"];
     ViewData["Website_OnsiteCaseSystem_Index"] = Localizer["Website_OnsiteCaseSystem_Index"];
+    ViewData["Website_JobRecordSystem_Index"] = Localizer["Website_JobRecordSystem_Index"];
 
     ViewData["Website_contact"] = Localizer["Website_contact"];
 
@@ -60,9 +61,7 @@
     @* 只不過一個取名CSS，用來放CSS檔案，一個取名Scripts，用來放js檔案 *@
     @* 參考資料 : https://ithelp.ithome.com.tw/articles/10159990 *@
     @RenderSection("CSS", required: false)
-    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+    
 </head>
 <body>
     <header>
@@ -78,7 +77,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Home" asp-action="Index">@ViewData["Website_index"]</a>
+                        <a class="nav-link text-white" asp-controller="Home" asp-action="Profile">@ViewData["Website_index"]</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
@@ -96,6 +95,8 @@
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">@ViewData["Website_OnsiteCaseSystem_Index"]</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-controller="JobRecordSystem" asp-action="JobRecordSystemIndex">@ViewData["Website_JobRecordSystem_Index"]</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -129,12 +130,16 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @* @RenderBody()的用途與@RenderSection()類似，主要是將View的內容放進來 *@
             @* 當網站開始編譯之後，首先會先渲染_ViewStart.cshtml的部分，接著會渲染View(ex.Home/Index)的部分，最後才會把Layout的內容渲染進來 *@
             @RenderBody()
         </main>
     </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
