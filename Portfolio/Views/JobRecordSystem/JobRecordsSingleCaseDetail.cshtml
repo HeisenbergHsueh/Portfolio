@@ -1,0 +1,88 @@
+﻿@model Portfolio.Models.JobRecordSystem.JobRecordsSingleCaseViewModel
+
+@{
+
+}
+
+@section CSS{ 
+    <style>
+        .PreLineSetting {
+            white-space: pre;
+        }
+    </style>
+}
+
+<div class="row my-3">
+    <div class="col-3">
+        <div class="border border-dark p-3 h-100">
+            <div class="h6 text-center mx-1">歷史紀錄區</div>
+            <table class="table">
+                <tr>
+                    <th>案件編號</th>
+                    <th>建案者</th>
+                    <th>建案時間</th>
+                    <th>連結</th>
+                </tr>
+                @foreach (var item in Model.JobRecordsEnum)
+                {
+                    @*<div class="h6 text-left d-block mt-1">
+                            <a asp-controller="JobRecordSystem" asp-action="JobRecordsSingleCaseDetail" asp-route-id="@item.CaseId">
+                                @Convert.ToDateTime(item.BuildDate).ToString("yyyyMMdd") - 案件紀錄
+                            </a>
+                        </div>*@
+                    <tr>
+                        <td>@item.CaseId</td>
+                        <td>@item.OnsiteName</td>
+                        <td>@Convert.ToDateTime(item.BuildDate).ToString("yyyyMMdd")</td>
+                        <td><a asp-controller="JobRecordSystem" asp-action="JobRecordsSingleCaseDetail" asp-route-id="@item.CaseId">請點此</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="border border-dark p-3 h-100">
+            <div class="h4 text-left d-block">@Html.DisplayFor(model => model.JobRecordsModel.CaseTitle)</div>
+            <div class="d-flex justify-content-between">
+                <div class="h6 text-left d-block m-0">建案時間 : @Html.DisplayFor(model => model.JobRecordsModel.BuildDate)</div>
+                <div class="h6 text-left d-block m-0">建案者 : @Html.DisplayFor(model => model.JobRecordsModel.OnsiteName)</div>
+            </div>
+            <div class="h6 text-left d-block mt-1">電腦名稱 : @Html.DisplayFor(model => model.JobRecordsModel.HostName)</div>
+            <hr />
+            <div class="h6 PreLineSetting">@Html.DisplayFor(model => model.JobRecordsModel.CaseDescription)</div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="border border-dark p-3 h-100">
+            <div class="h6 text-center mx-1">附件紀錄區</div>
+            @foreach (var item in Model.JobRecordsReplyModel)
+            {
+                <div class="h6 text-left d-block mt-1"><span class="text-primary">@item.AttachmentName</span></div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        @foreach (var item in Model.JobRecordsReplyModel)
+        {
+            <div class="border border-dark p-3 mb-3">
+                <div class="h6 text-left d-block m-0">@item.ReplyContent</div>
+                <hr />
+                <div class="d-flex justify-content-between">
+                    <div class="h6 text-left d-block m-0">留言時間 : @item.ReplyDateTime</div>
+                    <div class="h6 text-right d-block m-0">留言者 : @item.ReplyPersonName</div>
+                </div>
+                @if (item.IsThereAttachment == "1")
+                {
+                    <hr />
+                    <div class="h6 text-left d-block m-0">附件 : <span class="text-primary">@item.AttachmentName</span></div>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-3"></div>
+</div>
+

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Portfolio.Data;
 using Portfolio.Models.JobRecordSystem;
 using X.PagedList;
 using X.PagedList.Mvc.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace Portfolio.Controllers
 {
@@ -23,8 +25,11 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐場人員建案系統-Index
-        public IActionResult JobRecordSystemIndex(int? CaseId, string CaseStatus, string Location, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
+        public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
         {
+            //宣告一個新的JobRecordsViewModel
+            JobRecordsViewModel model = new JobRecordsViewModel();
+
             var GetJobRecordsAllData = from j in _db.JobRecords select j;
 
             #region LINQ多條件搜尋
@@ -33,14 +38,14 @@ namespace Portfolio.Controllers
                 GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.CaseId == CaseId);
             }
 
-            if (!string.IsNullOrEmpty(CaseStatus))
+            if (CaseStatus != null)
             {
-                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.CaseStatus.Contains(CaseStatus));
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.CaseStatus == CaseStatus);
             }
 
-            if (!string.IsNullOrEmpty(Location))
+            if (Location != null)
             {
-                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Location.Contains(Location));
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Location == Location);
             }
 
             if (!string.IsNullOrEmpty(OnsiteName))
@@ -59,7 +64,7 @@ namespace Portfolio.Controllers
             }
             #endregion
 
-            //使用ViewData存放user輸入的關鍵字
+            #region 使用ViewData存放user輸入的關鍵字
             ViewData["CaseId"] = CaseId;
             ViewData["CaseStatus"] = CaseStatus;
             ViewData["Location"] = Location;
@@ -67,65 +72,131 @@ namespace Portfolio.Controllers
             ViewData["UserName"] = UserName;
             ViewData["HostName"] = HostName;
             ViewData["PageSize"] = PageSize;
+            #endregion
 
-            #region 載入表單各欄位的項目
-            //從DB中的JobRecordsOwner的Table中，獲得Table中所有Item的資料
-            var GetJobRecordsOwnerItem = _db.JobRecordsOwner;
+            #region 載入表單中，需要使用dropdownlist、checkbox、radiobox呈現的欄位
+
+            #region Onsite Item
+            //從DB中的JobRecordsOnsiteList中，獲得所有Item的資料
+            var GetJobRecordsOnsiteListItem = _db.JobRecordsOnsiteList;
 
             //宣告一個 List<SelectListItem>的物件
-            List<SelectListItem> JobRecordsOwnerItemList = new List<SelectListItem>();
+            List<SelectListItem> JobRecordsOnsiteItemList = new List<SelectListItem>();
 
-            //把獲得的Owner Item全部裝入此List中
-            foreach (var item in GetJobRecordsOwnerItem)
+            //把獲得的Onsite Item全部裝入此List中
+            foreach (var item in GetJobRecordsOnsiteListItem)
             {
-                JobRecordsOwnerItemList.Add(new SelectListItem()
+                JobRecordsOnsiteItemList.Add(new SelectListItem()
                 {
-                    Text = item.OwnerName,
-                    Value = item.OwnerName,
+                    Text = item.OnsiteName,
+                    Value = item.OnsiteName,
                 });
             }
+            #endregion
 
-            var GetJobRecordsSiteItem = _db.JobRecordsSite;
+            #region CaseStatus Item
+            var GetJobRecordsCaseStatusItem = _db.JobRecordsCaseStatusItem;
 
-            List<SelectListItem> JobRecordsSiteItemList = new List<SelectListItem>();
+            List<SelectListItem> JobRecordsCaseStatusItemList = new List<SelectListItem>();
 
-            foreach (var item in GetJobRecordsSiteItem)
+            foreach (var item in GetJobRecordsCaseStatusItem)
             {
-                JobRecordsSiteItemList.Add(new SelectListItem()
+                JobRecordsCaseStatusItemList.Add(new SelectListItem()
                 {
-                    Text = item.SiteName,
-                    Value = item.SiteName,
+                    Text = item.CaseStatusName,
+                    Value = item.CaseStatusId.ToString(),
                 });
             }
+            #endregion
 
-            var GetJobRecordsStatusItem = _db.JobRecordsStatus;
+            #region Location Item
+            var GetJobRecordsLocationItem = _db.JobRecordsLocationItem;
 
-            List<SelectListItem> JobRecordsStatusItemList = new List<SelectListItem>();
+            List<SelectListItem> JobRecordsLocationItemList = new List<SelectListItem>();
 
-            foreach (var item in GetJobRecordsStatusItem)
+            foreach (var item in GetJobRecordsLocationItem)
             {
-                JobRecordsStatusItemList.Add(new SelectListItem()
+                JobRecordsLocationItemList.Add(new SelectListItem()
                 {
-                    Text = item.StatusName,
-                    Value = item.StatusName,
+                    Text = item.LocationName,
+                    Value = item.LocationId.ToString()
                 });
             }
+            #endregion
 
-
-            ViewBag.JobRecordsOwnerItemList = JobRecordsOwnerItemList;
-            ViewBag.JobRecordsSiteItemList = JobRecordsSiteItemList;
-            ViewBag.JobRecordsStatusItemList = JobRecordsStatusItemList;
+            model.JobRecordsOnsiteItemList = JobRecordsOnsiteItemList;
+            model.JobRecordsCaseStatusItemList = JobRecordsCaseStatusItemList;
+            model.JobRecordsLocationItemList = JobRecordsLocationItemList;            
 
             #endregion
 
             //宣告一個新的JobRecordsViewModel
-            JobRecordsViewModel jobRecordsViewModel = new JobRecordsViewModel
-            {
-                //將所query出來的資料，轉成ToList之後，再轉成PagedList，然後再放入ViewModel中的PagedList中
-                JobRecordsPagedList = GetJobRecordsAllData.ToList().ToPagedList(Page, PageSize)
-            };
+            //將所query出來的資料，轉成ToList之後，再轉成PagedList，然後再放入ViewModel中的PagedList中
+            model.JobRecordsPagedList = GetJobRecordsAllData.ToList().ToPagedList(Page, PageSize);
           
-            return View(jobRecordsViewModel);
+            return View(model);
+        }
+        #endregion
+
+        #region 駐場人員建案系統-單一Case的詳細內容(Detail)
+        public async Task<IActionResult> JobRecordsSingleCaseDetail(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            //撈取案件編號與輸入id相同的案件資料
+            var GetJobRecordsSingleData = await _db.JobRecords.FirstOrDefaultAsync(j => j.CaseId == id);
+
+            if(GetJobRecordsSingleData == null)
+            {
+                return NotFound();
+            }
+
+            //撈取與該案件編號相關聯的留言內容
+            var GetJobRecordsReplyRelatedData = await _db.JobRecordsReply.Where(j => j.RelatedWithJobRecordsId == id).OrderByDescending(j => j.ReplyDateTime).ToListAsync();
+
+            var GetHistoryCaseRecords = await _db.JobRecords.Where(j => j.HostName == GetJobRecordsSingleData.HostName).Where(j => j.BuildDate.CompareTo(GetJobRecordsSingleData.BuildDate)< 0 ).ToListAsync();
+
+            JobRecordsSingleCaseViewModel model = new JobRecordsSingleCaseViewModel();
+
+            model.JobRecordsModel = GetJobRecordsSingleData;
+
+            model.JobRecordsReplyModel = GetJobRecordsReplyRelatedData;
+
+            model.JobRecordsEnum = GetHistoryCaseRecords;
+
+            return View(model);
+        }
+        #endregion
+
+        #region 駐場人員建案系統-新建案件(Create)
+        public async Task<IActionResult> JobRecordsCreateCase(JobRecordsViewModel model)
+        {
+            var GetJobRecordsCaseStatusItem = await (from j in _db.JobRecordsCaseStatusItem select j).ToListAsync();
+
+            List<SelectListItem> JobRecordsCaseStatusItemList = new List<SelectListItem>();
+
+            foreach (var item in GetJobRecordsCaseStatusItem)
+            {
+                JobRecordsCaseStatusItemList.Add(new SelectListItem()
+                {
+                    Text = item.CaseStatusName,
+                    Value = item.CaseStatusId.ToString()
+                });
+            }
+
+            model.JobRecordsCaseStatusItemList = JobRecordsCaseStatusItemList;
+
+            return View();
+        }
+
+        [HttpPost, ActionName(nameof(JobRecordsCreateCase))]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> JobRecordsCreateCaseComfirm(JobRecordsViewModel model)
+        {
+            return View();
         }
         #endregion
 

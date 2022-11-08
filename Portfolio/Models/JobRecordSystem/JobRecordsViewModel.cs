@@ -13,25 +13,18 @@ namespace Portfolio.Models.JobRecordSystem
 {
     public class JobRecordsViewModel
     {
-        public JobRecords JobRecordsVM { get; set; }
+        public JobRecords JobRecordsModel { get; set; }
 
         public IPagedList<JobRecords> JobRecordsPagedList { get; set; }
 
-        public JobRecordsStatus jobrecordsStatus { get; set; }
+        public IEnumerable<SelectListItem> JobRecordsCaseStatusItemList { get; set; }  //用來存放JobRecordsCaseStatusItem資料表中的Item
+
+        public IEnumerable<SelectListItem> JobRecordsOnsiteItemList { get; set; }   //用來存放JobRecordsOnsiteList資料表中的Item
+
+        public IEnumerable<SelectListItem> JobRecordsLocationItemList { get; set; }   //用來存放JobRecordsLocationItem資料表中的Item
 
         public List<JobsRecordStatusListItem> StatusCBVM { get; set; }  //StatusCBVM = StatusCheckBoxViewModel
 
-        public IEnumerable<SelectListItem> JobRecordsStatusItemList { get; set; }  //用來存放 JobsRecordStatus 資料表中的 Item
-
-        public IEnumerable<SelectListItem> JobRecordsSiteItemList { get; set; }  //用來存放 JobsRecordSite 資料表中的 Item
-
-        public IEnumerable<SelectListItem> JobRecordsOwnerItemList { get; set; }  //用來存放 JobsRecordOwner 資料表中的 Item
-
-        public IEnumerable<SelectListItem> OSVersionSelectListItem { get; set; }  //用來存放 JobsRecordOSVersion 資料表中的 Item
-
-        public IEnumerable<SelectListItem> ProductTypeSelectListItem { get; set; }  //用來存放 JobsRecordProductType 資料表中的 Item
-
-        public IEnumerable<SelectListItem> CategorySelectListItem { get; set; }  //用來存放 JobsRecordProductType 資料表中的 Item
     }
   
     public class JobsRecordStatusListItem

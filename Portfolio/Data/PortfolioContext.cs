@@ -25,15 +25,17 @@ namespace Portfolio.Data
 
         public virtual DbSet<JobRecordsCategory> JobRecordsCategory { get; set; }
 
-        public virtual DbSet<JobRecordsOsversion> JobRecordsOsversion { get; set; }
+        public virtual DbSet<JobRecordsOSVersion> JobRecordsOSVersion { get; set; }
 
-        public virtual DbSet<JobRecordsOwner> JobRecordsOwner { get; set; }
+        public virtual DbSet<JobRecordsOnsiteList> JobRecordsOnsiteList { get; set; }
 
         public virtual DbSet<JobRecordsProductType> JobRecordsProductType { get; set; }
 
-        public virtual DbSet<JobRecordsSite> JobRecordsSite { get; set; }
+        public virtual DbSet<JobRecordsLocationItem> JobRecordsLocationItem { get; set; }
 
-        public virtual DbSet<JobRecordsStatus> JobRecordsStatus { get; set; }
+        public virtual DbSet<JobRecordsCaseStatusItem> JobRecordsCaseStatusItem { get; set; }
+
+        public virtual DbSet<JobRecordsReply> JobRecordsReply { get; set; }
         #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -88,51 +90,34 @@ namespace Portfolio.Data
             #region JobRecords Entity
             modelBuilder.Entity<JobRecords>(entity =>
             {
-                entity.Property(e => e.CaseId);
+                entity.Property(e => e.CaseId).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Category)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.CaseStatus).IsRequired();
 
-                entity.Property(e => e.CaseDescription)
-                    .IsRequired();
+                entity.Property(e => e.CaseTitle).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.ClosedDate)
-                    .HasColumnType("datetime");
+                entity.Property(e => e.BuildDate).HasColumnType("datetime");
 
-                entity.Property(e => e.HostName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.CaseDescription).IsRequired();
 
-                entity.Property(e => e.OSVersion)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Location).IsRequired();
 
-                entity.Property(e => e.OnsiteName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.UserName).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.ProductType)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OnsiteName).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.Location)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.HostName).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.BuildDate)
-                    .HasColumnType("datetime");
+                entity.Property(e => e.ProductType).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.CaseStatus)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OSVersion).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.UpdateDate)
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Category).IsRequired();
 
-                entity.Property(e => e.UserName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.ClosedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ClosedOnsiteName).HasMaxLength(50);
+
             });
             #endregion
 
@@ -149,32 +134,26 @@ namespace Portfolio.Data
             });
             #endregion
 
-            #region JobRecordsOsversion Entity
-            modelBuilder.Entity<JobRecordsOsversion>(entity =>
+            #region JobRecordsOSVersion Entity
+            modelBuilder.Entity<JobRecordsOSVersion>(entity =>
             {
-                entity.HasKey(e => e.OsversionId);
+                entity.HasKey(e => e.OSVersionId);
 
                 entity.ToTable("JobsRecordOSVersion");
 
-                entity.Property(e => e.OsversionId)
-                    .HasColumnName("OSVersionId")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.OSVersionId).HasColumnName("OSVersionId").ValueGeneratedNever();
 
-                entity.Property(e => e.OsversionName)
-                    .IsRequired()
-                    .HasColumnName("OSVersionName")
-                    .HasMaxLength(50);
+                entity.Property(e => e.OSVersionName).IsRequired().HasColumnName("OSVersionName").HasMaxLength(50);
             });
             #endregion
 
-            #region JobRecordsOwner Entity
-            modelBuilder.Entity<JobRecordsOwner>(entity =>
+            #region JobRecordsOnsiteList Entity
+            modelBuilder.Entity<JobRecordsOnsiteList>(entity =>
             {
-                entity.HasKey(e => e.OwnerId);
+                entity.HasKey(e => e.OnsiteId);
 
-                entity.Property(e => e.OwnerName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OnsiteName).IsRequired().HasMaxLength(50);
+
             });
             #endregion
 
@@ -191,30 +170,49 @@ namespace Portfolio.Data
             });
             #endregion
 
-            #region JobRecordsSite Entity
-            modelBuilder.Entity<JobRecordsSite>(entity =>
+            #region JobRecordsLocationItem Entity
+            modelBuilder.Entity<JobRecordsLocationItem>(entity =>
             {
-                entity.HasKey(e => e.SiteId);
+                entity.HasKey(e => e.LocationId);
 
-                entity.Property(e => e.SiteName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.LocationName).IsRequired().HasMaxLength(50);
+
             });
             #endregion
 
-            #region JobRecordsStatus Entity
-            modelBuilder.Entity<JobRecordsStatus>(entity =>
+            #region JobRecordsCaseStatusItem Entity
+            modelBuilder.Entity<JobRecordsCaseStatusItem>(entity =>
             {
-                entity.HasKey(e => e.StatusId);
+                entity.HasKey(e => e.CaseStatusId);
 
-                entity.Property(e => e.StatusId).ValueGeneratedNever();
+                entity.Property(e => e.CaseStatusId).ValueGeneratedNever();
 
-                entity.Property(e => e.StatusName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.CaseStatusName).IsRequired().HasMaxLength(50);
+
             });
             #endregion
-           
+
+            #region JobRecordsReply Entity
+            modelBuilder.Entity<JobRecordsReply>(entity =>
+            {
+                entity.HasKey(e => e.ReplyId);
+
+                entity.Property(e => e.ReplyId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.RelatedWithJobRecordsId).IsRequired();
+
+                entity.Property(e => e.ReplyPersonName).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.ReplyDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.ReplyContent).IsRequired();
+
+                entity.Property(e => e.IsThereAttachment).HasMaxLength(10);
+
+                entity.Property(e => e.AttachmentName).HasMaxLength(50);
+            });
+            #endregion
+
             #endregion
 
             #region

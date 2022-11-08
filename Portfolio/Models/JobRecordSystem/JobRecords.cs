@@ -14,21 +14,20 @@ namespace Portfolio.Models.JobRecordSystem
         public int CaseId { get; set; }
 
         [Required(ErrorMessage = "此欄位不可以空白")]
-        public string CaseStatus { get; set; }
+        public int CaseStatus { get; set; }
+
+        [Required(ErrorMessage = "此欄位不可以空白")]
+        public string CaseTitle { get; set; }
 
         [DataType(DataType.DateTime)]
         //ApplyFormatInEditMode = true
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd hh:mm:ss}")]
         public DateTime BuildDate { get; set; }
-     
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd hh:mm:ss}")]
-        public DateTime UpdateDate { get; set; }
 
         [Required(ErrorMessage = "此欄位不可以空白")]
         public string CaseDescription { get; set; }
 
-        public string Location { get; set; }
+        public int Location { get; set; }
 
         [Required(ErrorMessage = "此欄位不可以空白")]
         [StringLength(50, ErrorMessage = "字串長度不可以超過50個字元")]
@@ -47,13 +46,13 @@ namespace Portfolio.Models.JobRecordSystem
 
         public string OSVersion { get; set; }
 
-        public string Category { get; set; }
+        public int Category { get; set; }
 
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd hh:mm:ss}")]
         public Nullable<DateTime> ClosedDate { get; set; }
 
-        public string CaseIsClosed { get; set; }
+        public string ClosedOnsiteName { get; set; }
 
 
     }

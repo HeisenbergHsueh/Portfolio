@@ -18,3 +18,35 @@
 .navbar-nav li:hover > .dropdown-menu {
     display: block;
 }
+
+.width5 {
+    width: 5%;
+}
+
+.width7dot5 {
+    width: 7.5%;
+}
+
+.width10 {
+    width: 10%;
+}
+
+.width12dot5 {
+    width: 12.5%;
+}
+
+.width15 {
+    width: 15%;
+}
+
+.width17dot5 {
+    width: 17.5%;
+}
+
+.width20 {
+    width: 20%;
+}
+
+.width25 {
+    width: 25%;
+}
