@@ -7,5 +7,6 @@ namespace Portfolio.Models.JobRecordSystem
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
+        public int ProductSort { get; set; }
     }
 }

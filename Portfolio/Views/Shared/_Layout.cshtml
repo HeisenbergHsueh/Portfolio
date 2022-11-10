@@ -54,6 +54,7 @@
     <link rel="icon" type="image/x-icon" href="~/Images/H_icon.jpg" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
     @* RenderSection的用途是讓軟體工程師可以從View中將js、css檔案或一段程式碼放到Layout的區塊 *@
     @* 舉例來說，假設在Home/Index，create了一個區塊(CSS)，並在此區塊中，引用了一個style.css的檔案，最後ASP.net core的網站編譯時 *@
     @* 則會將引用的style.css放置到 @RenderSection("CSS", required: false)所在的位置，所以使用chrome的開發人員檢視工具*@
@@ -61,7 +62,7 @@
     @* 只不過一個取名CSS，用來放CSS檔案，一個取名Scripts，用來放js檔案 *@
     @* 參考資料 : https://ithelp.ithome.com.tw/articles/10159990 *@
     @RenderSection("CSS", required: false)
-    
+
 </head>
 <body>
     <header>
@@ -83,7 +84,7 @@
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                             @ViewData["Website_security"]
                         </a>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu m-0">
                             <a class="dropdown-item" href="#">@ViewData["Website_documents"]</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">@ViewData["Website_tools"]</a>
@@ -93,7 +94,7 @@
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                             @ViewData["Website_OnsiteCaseSystem"]
                         </a>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu m-0">
                             <a class="dropdown-item" href="#">@ViewData["Website_OnsiteCaseSystem_Index"]</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" asp-controller="JobRecordSystem" asp-action="JobRecordSystemIndex">@ViewData["Website_JobRecordSystem_Index"]</a>

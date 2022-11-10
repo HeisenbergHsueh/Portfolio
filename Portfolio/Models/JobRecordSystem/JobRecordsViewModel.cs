@@ -23,6 +23,12 @@ namespace Portfolio.Models.JobRecordSystem
 
         public IEnumerable<SelectListItem> JobRecordsLocationItemList { get; set; }   //用來存放JobRecordsLocationItem資料表中的Item
 
+        public IEnumerable<SelectListItem> JobRecordsProductTypeList { get; set; }   //用來存放JobRecordsProductType資料表中的Item
+
+        public IEnumerable<SelectListItem> JobRecordsOSVersionList { get; set; }   //用來存放JobRecordsOSVersion資料表中的Item
+
+        public IEnumerable<SelectListItem> JobRecordsCategoryList { get; set; }   //用來存放JobRecordsCategory資料表中的Item
+
         public List<JobsRecordStatusListItem> StatusCBVM { get; set; }  //StatusCBVM = StatusCheckBoxViewModel
 
     }

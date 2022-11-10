@@ -2,35 +2,44 @@
 
 @{
     ViewData["Title"] = "UserLogin";
-    var returnUrl = Context.Request.Query["ReturnUrl"];
+    //var returnUrl = Context.Request.Query["GetPreviousUrl"];
+    var returnUrl = TempData["returnUrl"];
 }
 
-<h1 class="text-center mt-5">User Login</h1>
+@section CSS {
+    <style>
+        .pd_top{
+            padding-top: 12.5%;
+        }
+    </style>
+}
 
-<hr />
-<div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <h5 class="text-danger">@ViewData["ErrorMessage"]</h5>
-        <form asp-action="Login" asp-controller="LoginSystem" asp-route-returnurl="@returnUrl">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserAccount" class="control-label"></label>
-                <input asp-for="UserAccount" class="form-control" />
-                <span asp-validation-for="UserAccount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserPassword" class="control-label"></label>
-                <input asp-for="UserPassword" class="form-control" />
-                <span asp-validation-for="UserPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-4"></div>
+        <div class="col-4 pd_top">
+            <h5 class="text-danger">@ViewData["ErrorMessage"]</h5>
+            <form asp-action="Login" asp-controller="LoginSystem" asp-route-returnurl="@returnUrl">
+                <div class="text-center mb-2">
+                    <img src="~/Images/H_icon.jpg" class="rounded" alt="" width="50" height="50" />
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="UserAccount" class="form-control my-1 mx-auto" placeholder="Enter Account" />
+                    <span asp-validation-for="UserAccount" class="text-danger"></span>
+                    <input asp-for="UserPassword" class="form-control my-1 mx-auto" placeholder="Enter Password" />
+                    <span asp-validation-for="UserPassword" class="text-danger"></span>
+                    <div class="text-center">
+                        <input type="submit" value="Sign in" class="btn btn-primary form-control my-1">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-4"></div>
     </div>
-    <div class="col-md-4"></div>
 </div>
+
+
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

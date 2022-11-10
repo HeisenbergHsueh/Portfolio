@@ -42,9 +42,9 @@ namespace Portfolio.Models.JobRecordSystem
         [RegularExpression("^[a-zA-Z][a-zA-Z0-9]{7}$", ErrorMessage = "只允數輸入8位的英文(大小寫皆可)數字")]  //正規表達式 : 只允數輸入8位的英文(大小寫皆可)數字
         public string HostName { get; set; }
 
-        public string ProductType { get; set; }
+        public int ProductType { get; set; }
 
-        public string OSVersion { get; set; }
+        public int OSVersion { get; set; }
 
         public int Category { get; set; }
 

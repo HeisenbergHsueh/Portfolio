@@ -97,8 +97,10 @@
                 <h4 class="blog-post-title">作品集</h4>
                 <hr>
                 <h4>登入系統</h4>
+                <h6>語言 : C#、JavaScript、HTML、CSS</h6>
+                <h6>框架 : ASP.NET Core MVC、jQuery、Bootstrap 4</h6>
+                <h6>實作功能如下 : </h6>
                 <ol>
-                    <li>使用C#、ASP.NET Core MVC、JavaScript、jQuery、Bootstrap 4進行開發</li>
                     <li>註冊、密碼hash加密(hash+salt)、Email驗證(透過API進行驗證)</li>
                     <li>登入(cookie驗證、角色授權)、登出</li>
                     <li>忘記密碼、重設密碼</li>
@@ -106,29 +108,32 @@
                     <li>角色授權-透過設定不同角色給予登入者不同的使用權限</li>
                     <li>後台管理系統-對註冊於此網站的帳號進行角色及policy添加/刪減、基本資料維護</li>
                 </ol>
-                <h4>駐廠人員建案系統</h4>
+                <h4>駐廠人員建案系統(<a asp-controller="JobRecordSystem" asp-action="JobRecordSystemIndex">請點此</a>)</h4>
+                <h6>語言 : C#、JavaScript、HTML、CSS</h6>
+                <h6>框架 : ASP.NET Core MVC、jQuery、Bootstrap 4</h6>
+                <h6>實作功能如下 : </h6>
                 <ol>
-                    <li>使用C#、ASP.NET Core MVC、JavaScript、jQuery、Bootstrap 4進行開發</li>
                     <li>基本的CRUD功能</li>
                     <li>分頁、排序、多條件搜尋</li>
                     <li>Excel匯出案件紀錄(可進行完多條件過濾之後再匯出)、匯入Excel建案、更新案件之功能</li>
                     <li>駐廠人員KPI圖表</li>
                 </ol>
                 <h4>資安自動化工具與腳本撰寫</h4>
+                <h6>語言 : AutoIt、VB.NET、Batch Script、PowerShell</h6>
+                <h6>實作功能如下 : </h6>
                 <ol>
-                    <li>使用AutoIt、VB.NET、Batch Script、PowerShell進行開發</li>
                     <li>主要針對防毒軟體的機碼值(registry key)、服務狀態、安裝目錄下的檔案進行資料分析並制定各種更新、升級、修復策略</li>
                     <li>更新策略 : 防毒軟體的病毒碼，每天都會進行更新，但時常會因為服務、網路問題、Windows問題而導致更新出現異常，而自動化工具會在確認完這些問題之後，進行修復並做更新</li>
                     <li>升級策略 : 防毒軟體每年需要更新1-2次patch，以來用規避重大漏洞所帶來的隱藏威脅，而以往採用人力更新patch，一台電腦平均會花費30分鐘，採用自動化工具後，可以透過SCCM、SCOM、AD的GPO進行自動化升級，或User直接下載地端工具Click兩下進行防毒軟體的升級</li>
                     <li>修復策略 : 當偵測到防毒軟體機碼值異常、服務狀態異常、病毒引擎、病毒碼版本異常時進行自動化修復</li>
                 </ol>
-                <h4>資安監控系統</h4>
-                <ol>
-                    <li>使用Power BI、ASP.NET Core MVC進行串接</li>
-                    <li>在Client端上，會放置一支地端工具，負責每天紀錄Client的通訊port、服務狀態、病毒碼版本是否正常</li>
-                    <li>地端工具會將資訊透過API傳回ASP.NET Core MVC的網站</li>
-                    <li>接著再使用Power BI去抓取DB中的資料拉成圖表，並在Power BI中設定資料警示，當狀態出現問題的時候，會傳送mail給防毒軟體負責人&駐廠人員</li>
-                </ol>
+                @*<h4>資安監控系統</h4>
+        <ol>
+            <li>使用Power BI、ASP.NET Core MVC進行串接</li>
+            <li>在Client端上，會放置一支地端工具，負責每天紀錄Client的通訊port、服務狀態、病毒碼版本是否正常</li>
+            <li>地端工具會將資訊透過API傳回ASP.NET Core MVC的網站</li>
+            <li>接著再使用Power BI去抓取DB中的資料拉成圖表，並在Power BI中設定資料警示，當狀態出現問題的時候，會傳送mail給防毒軟體負責人&駐廠人員</li>
+        </ol>*@
             </div>
         </div>
 

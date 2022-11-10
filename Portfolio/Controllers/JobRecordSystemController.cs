@@ -25,7 +25,7 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐場人員建案系統-Index
-        public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
+        public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, int? Category, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
         {
             //宣告一個新的JobRecordsViewModel
             JobRecordsViewModel model = new JobRecordsViewModel();
@@ -48,6 +48,21 @@ namespace Portfolio.Controllers
                 GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Location == Location);
             }
 
+            if (ProductType != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.ProductType == ProductType);
+            }
+
+            if (OSVersion != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.OSVersion == OSVersion);
+            }
+
+            if (Category != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Category == Category);
+            }
+
             if (!string.IsNullOrEmpty(OnsiteName))
             {
                 GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.OnsiteName.Contains(OnsiteName));
@@ -68,6 +83,9 @@ namespace Portfolio.Controllers
             ViewData["CaseId"] = CaseId;
             ViewData["CaseStatus"] = CaseStatus;
             ViewData["Location"] = Location;
+            ViewData["ProductType"] = ProductType;
+            ViewData["OSVersion"] = OSVersion;
+            ViewData["Category"] = Category;
             ViewData["OnsiteName"] = OnsiteName;
             ViewData["UserName"] = UserName;
             ViewData["HostName"] = HostName;
@@ -124,15 +142,62 @@ namespace Portfolio.Controllers
             }
             #endregion
 
+            #region Product Item
+            var GetJobRecordsProductTypeItem = _db.JobRecordsProductType;
+
+            List<SelectListItem> JobRecordsProductTypeItemList = new List<SelectListItem>();
+
+            foreach(var item in GetJobRecordsProductTypeItem)
+            {
+                JobRecordsProductTypeItemList.Add(new SelectListItem() 
+                {
+                    Text = item.ProductName,
+                    Value = item.ProductId.ToString()
+                });
+            }
+            #endregion
+
+            #region OSVersion Item
+            var GetJobRecordsOSVersionItem = _db.JobRecordsOSVersion;
+
+            List<SelectListItem> JobRecordsOSVersionItemList = new List<SelectListItem>();
+
+            foreach (var item in GetJobRecordsOSVersionItem)
+            {
+                JobRecordsOSVersionItemList.Add(new SelectListItem()
+                {
+                    Text = item.OSVersionName,
+                    Value = item.OSVersionId.ToString()
+                });
+            }
+            #endregion
+
+            #region Category Item
+            var GetJobRecordsCategoryItem = _db.JobRecordsCategory;
+
+            List<SelectListItem> JobRecordsCategoryItemList = new List<SelectListItem>();
+
+            foreach (var item in GetJobRecordsCategoryItem)
+            {
+                JobRecordsCategoryItemList.Add(new SelectListItem()
+                {
+                    Text = item.CategoryName,
+                    Value = item.CategoryId.ToString()
+                });
+            }
+            #endregion
+
             model.JobRecordsOnsiteItemList = JobRecordsOnsiteItemList;
             model.JobRecordsCaseStatusItemList = JobRecordsCaseStatusItemList;
-            model.JobRecordsLocationItemList = JobRecordsLocationItemList;            
+            model.JobRecordsLocationItemList = JobRecordsLocationItemList;
+            model.JobRecordsProductTypeList = JobRecordsProductTypeItemList;
+            model.JobRecordsOSVersionList = JobRecordsOSVersionItemList;
+            model.JobRecordsCategoryList = JobRecordsCategoryItemList;
 
             #endregion
 
-            //宣告一個新的JobRecordsViewModel
-            //將所query出來的資料，轉成ToList之後，再轉成PagedList，然後再放入ViewModel中的PagedList中
-            model.JobRecordsPagedList = GetJobRecordsAllData.ToList().ToPagedList(Page, PageSize);
+            //將所query出來的資料，依照ID由大到小排序，轉成ToList之後，再轉成PagedList，然後再放入ViewModel中的PagedList中
+            model.JobRecordsPagedList = GetJobRecordsAllData.OrderByDescending(j => j.CaseId).ToList().ToPagedList(Page, PageSize);
           
             return View(model);
         }
@@ -198,6 +263,9 @@ namespace Portfolio.Controllers
         {
             return View();
         }
+        #endregion
+
+        #region 駐場人員建案系統-禁止瀏覽頁面(Forbidden)
         #endregion
 
     }

@@ -46,13 +46,16 @@ namespace Portfolio.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous] //任何人都可以瀏覽此頁面
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {      
             //判斷是否已有帳號登入，如果有則導向首頁(Home/Index)，如果沒有則導向登入頁面(LoginSystem/Login)
             if(User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            TempData["returnUrl"] = returnUrl;
+
             return View();
         }
 

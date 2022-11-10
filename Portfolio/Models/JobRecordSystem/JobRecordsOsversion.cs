@@ -7,5 +7,6 @@ namespace Portfolio.Models.JobRecordSystem
     {
         public int OSVersionId { get; set; }
         public string OSVersionName { get; set; }
+        public int OSVersionSort { get; set; }
     }
 }

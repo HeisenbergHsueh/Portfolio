@@ -4,14 +4,24 @@
 
 }
 
+@section CSS {
+    <style>
+        .border_width_1px{
+            border-width: 1px;
+        }
+    </style>
+}
+
 <div class="row">
     <div class="col-1"></div>
     <div class="col-10">
 
         <div class="row mx-auto justify-content-start align-items-start mt-3">
-            <p class="mb-0">
+            <div class="mb-0">
                 <a asp-controller="JobRecordSystemIndex" asp-action="JobRecordsCreateCase" class="btn btn-primary">建立新案件</a>
-            </p>
+                <a asp-controller="JobRecordSystemIndex" asp-action="JobRecordsCreateCase" class="btn btn-warning">批次建案</a>
+                <a asp-controller="JobRecordSystemIndex" asp-action="JobRecordsCreateCase" class="btn btn-info">批次留言</a>
+            </div>
         </div>
 
         <hr />
@@ -20,37 +30,40 @@
         {
             <div class="h4 font-weight-bold">進階搜尋</div>
             <div class="row mx-auto justify-content-start align-items-start">
-
                 <div class="form-group mx-2">
-                    <label class="font-weight-bold" for="CaseId">案件編號</label>
-                    @Html.TextBox("CaseId", ViewData["CaseId"] as string, htmlAttributes: new { @class = "form-control" })
+                    @Html.TextBox("CaseId", ViewData["CaseId"] as string, htmlAttributes: new { @class = "form-control-sm border_width_1px", @placeholder = "請輸入案件編號" })
                 </div>
                 <div class="form-group mx-2">
-                    <label class="font-weight-bold" for="CaseStatus">狀態</label>
-                    @Html.DropDownList("CaseStatus", Model.JobRecordsCaseStatusItemList, "請選擇案件狀態", new { @class = "form-control" })
+                    @Html.TextBox("UserName", ViewData["UserName"] as string, htmlAttributes: new { @class = "form-control-sm border_width_1px", @placeholder = "請輸入報案人員名稱" })
                 </div>
                 <div class="form-group mx-2">
-                    <label class="font-weight-bold" for="Location">廠區</label>
-                    @Html.DropDownList("Location", Model.JobRecordsLocationItemList, "請選擇報案區域", new { @class = "form-control" })
+                    @Html.TextBox("HostName", ViewData["HostName"] as string, htmlAttributes: new { @class = "form-control-sm border_width_1px", @placeholder = "請輸入電腦名稱" })
+                </div>
+            </div>
+            <div class="row mx-auto justify-content-start align-items-start">
+                <div class="form-group mx-2">
+                    @Html.DropDownList("CaseStatus", Model.JobRecordsCaseStatusItemList, "請選擇案件狀態", new { @class = "form-control-sm" })
                 </div>
                 <div class="form-group mx-2">
-                    <label class="font-weight-bold" for="OnsiteName">處理人員</label>
-                    @Html.DropDownList("OnsiteName", Model.JobRecordsOnsiteItemList, "請選擇處理人員", new { @class = "form-control" })
+                    @Html.DropDownList("Location", Model.JobRecordsLocationItemList, "請選擇報案區域", new { @class = "form-control-sm" })
                 </div>
                 <div class="form-group mx-2">
-                    <label class="font-weight-bold" for="UserName">報案人員</label>
-                    @Html.TextBox("UserName", ViewData["UserName"] as string, htmlAttributes: new { @class = "form-control" })
-                </div>
-                <div class="form-group mx-2">
-                    <label class="font-weight-bold" for="HostName">電腦名稱</label>
-                    @Html.TextBox("HostName", ViewData["HostName"] as string, htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownList("OnsiteName", Model.JobRecordsOnsiteItemList, "請選擇處理人員", new { @class = "form-control-sm" })
                 </div>
 
-
+                <div class="form-group mx-2">
+                    @Html.DropDownList("ProductType", Model.JobRecordsProductTypeList, "請選擇產品類型", new { @class = "form-control-sm" })
+                </div>
+                <div class="form-group mx-2">
+                    @Html.DropDownList("OSVersion", Model.JobRecordsOSVersionList, "請選擇系統類型", new { @class = "form-control-sm" })
+                </div>
+                <div class="form-group mx-2">
+                    @Html.DropDownList("Category", Model.JobRecordsCategoryList, "請選擇案件分類", new { @class = "form-control-sm" })
+                </div>
             </div>
             <div class="row mx-auto justify-content-start align-items-start">
                 <button type="submit" class="btn btn-success mx-2">搜尋</button>
-                @Html.ActionLink("清除搜尋結果", "JobRecordSystemIndex", "JobRecordSystem", new { }, new { @class = "btn btn-warning mx-2" })
+                @Html.ActionLink("清除搜尋結果", "JobRecordSystemIndex", "JobRecordSystem", new { }, new { @class = "btn btn-danger mx-2" })
                 @*@Html.ActionLink("匯出日誌", "JobsRecordExport", "JobsRecord", null, new { @class = "btn btn-primary ml-3" })*@
             </div>
         }
@@ -110,26 +123,26 @@
                             <td class="width10">
                                 @Convert.ToDateTime(item.BuildDate).ToString("yyyy/MM/dd")
                             </td>
-                            <td>
+                            <td class="width20">
                                 @Html.DisplayFor(modelItem => item.CaseTitle)
                             </td>
                             @foreach (var L in Model.JobRecordsLocationItemList)
                             {
                                 if (item.Location == Convert.ToInt32(L.Value))
                                 {
-                                    <td>@L.Text</td>
+                                    <td class="width10">@L.Text</td>
                                 }
                             }
-                            <td>
+                            <td class="width10">
                                 @Html.DisplayFor(modelItem => item.UserName)
                             </td>
-                            <td>
+                            <td class="width10">
                                 @Html.DisplayFor(modelItem => item.OnsiteName)
                             </td>
-                            <td>
+                            <td class="width10">
                                 @Html.DisplayFor(modelItem => item.HostName)
                             </td>
-                            <td>
+                            <td class="width10">
                                 @Html.ActionLink("詳細內容", "JobRecordsSingleCaseDetail", new { id = item.CaseId }, new { @class = "btn btn-success" })
                                 @*@if (item.CaseIsClosed == "1")
                             {

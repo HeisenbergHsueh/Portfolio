@@ -108,9 +108,9 @@ namespace Portfolio.Data
 
                 entity.Property(e => e.HostName).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.ProductType).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ProductType).IsRequired();
 
-                entity.Property(e => e.OSVersion).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.OSVersion).IsRequired();
 
                 entity.Property(e => e.Category).IsRequired();
 
@@ -139,11 +139,7 @@ namespace Portfolio.Data
             {
                 entity.HasKey(e => e.OSVersionId);
 
-                entity.ToTable("JobsRecordOSVersion");
-
-                entity.Property(e => e.OSVersionId).HasColumnName("OSVersionId").ValueGeneratedNever();
-
-                entity.Property(e => e.OSVersionName).IsRequired().HasColumnName("OSVersionName").HasMaxLength(50);
+                entity.Property(e => e.OSVersionName).IsRequired().HasMaxLength(50);
             });
             #endregion
 
@@ -164,9 +160,7 @@ namespace Portfolio.Data
 
                 entity.Property(e => e.ProductId).ValueGeneratedNever();
 
-                entity.Property(e => e.ProductName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.ProductName).IsRequired().HasMaxLength(50);
             });
             #endregion
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -77,6 +78,10 @@ namespace Portfolio
             });
             #endregion
 
+            #region Session
+            
+            #endregion
+
             services.AddScoped<HeisenbergHsuehCookieAuthenticationEvents>();
 
             #region 授權
@@ -123,7 +128,7 @@ namespace Portfolio
         //可以跳轉到對應語系的頁面，因此以override的方式，重新改寫了RedirectToLogin、RedirectToLogout、RedirectToAccessDenied的跳轉方法
         //參考資料(1) : https://social.msdn.microsoft.com/Forums/en-US/8626b4cf-be32-45e7-9704-e98c6d11b10f/how-can-i-set-dynamic-configureapplicationcookie?forum=aspdotnetcore
         public class HeisenbergHsuehCookieAuthenticationEvents : CookieAuthenticationEvents
-        {
+        {            
             public override Task RedirectToLogin(RedirectContext<CookieAuthenticationOptions> context)
             {
                 string GetCurrentContextPath = context.Request.Path.ToString();
@@ -139,9 +144,9 @@ namespace Portfolio
                     SetCulture = "en-US";
                 }
 
-                context.RedirectUri = $"{context.Request.Scheme}://{context.Request.Host}/{SetCulture}/LoginSystem/Login";
+                context.RedirectUri = $"{context.Request.Scheme}://{context.Request.Host}/{SetCulture}/LoginSystem/Login?returnUrl=" + GetCurrentContextPath;
 
-                return base.RedirectToLogin(context);
+                return base.OnRedirectToLogin(context);
             }
 
             public override Task RedirectToLogout(RedirectContext<CookieAuthenticationOptions> context)
@@ -211,6 +216,9 @@ namespace Portfolio
             app.UseAuthentication();
             //啟用授權
             app.UseAuthorization();
+            #endregion
+
+            #region Session
             #endregion
 
             #region 多國語系設定
