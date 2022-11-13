@@ -1,0 +1,97 @@
+﻿@model Portfolio.Models.JobRecordSystem.JobRecordsViewModel
+
+@{
+
+}
+
+@section CSS{
+    <style>
+        .PreLineSetting {
+            white-space: pre-wrap;
+        }
+    </style>
+}
+
+<div class="row p-3">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="h4 text-center">建立案件</div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <span asp-validation-for="JobRecordsModel.OnsiteName" class="text-danger"></span>
+        <hr />
+        <form asp-controller="JobRecordSystem" asp-action="JobRecordsCreateCase">
+
+            <div class="form-group">
+                <div class="h6">標題</div>
+                <input type="text" class="form-control" asp-for="JobRecordsModel.CaseTitle" placeholder="請輸入案件標題" />
+            </div>
+            <div class="form-row">
+                <div class="form-group col-4">
+                    <div class="h6">駐場人員帳號</div>
+                    <input type="text" class="form-control mb-1" asp-for="JobRecordsModel.OnsiteName" value="@User.Identity.Name" readonly="readonly" />
+                </div>
+                <div class="form-group col-4">
+                    <div class="h6">報案人員帳號</div>
+                    <input type="text" class="form-control mb-1" asp-for="JobRecordsModel.UserName" placeholder="請輸入報案人員帳號" />
+                </div>
+                <div class="form-group col-4">
+                    <div class="h6">電腦名稱</div>
+                    <input type="text" class="form-control mb-1" asp-for="JobRecordsModel.HostName" placeholder="請輸入電腦名稱" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-3">
+                    <div class="h6">報案廠區</div>
+                    <select class="form-control-sm" asp-for="JobRecordsModel.Location">
+                        <option value="">請選擇報案廠區</option>
+                        @foreach (var item in Model.LocationList)
+                        {
+                            <option value="@item.LocationId">@item.LocationName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-3">
+                    <div class="h6">產品類型</div>
+                    <select class="form-control-sm" asp-for="JobRecordsModel.ProductType">
+                        <option value="">請選擇產品類型</option>
+                        @foreach (var item in Model.ProductTypeList)
+                        {
+                            <option value="@item.ProductId">@item.ProductName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-3">
+                    <div class="h6">系統版本</div>
+                    <select class="form-control-sm" asp-for="JobRecordsModel.OSVersion">
+                        <option value="">請選擇系統版本</option>
+                        @foreach (var item in Model.OSVersionList)
+                        {
+                            <option value="@item.OSVersionId">@item.OSVersionName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="h6">案件分類(可複選)</div>
+                @foreach (var item in Model.CategoryList)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" value="@item.CategoryId" name="CaseCategory" />
+                        <label class="form-check-label">@item.CategoryName</label>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <div class="h6">案件描述</div>
+                <textarea class="form-control" rows="5" asp-for="JobRecordsModel.CaseDescription"></textarea>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-success" type="submit">送出</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-3"></div>
+</div>
+

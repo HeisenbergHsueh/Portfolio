@@ -4,10 +4,10 @@
 
 }
 
-@section CSS{ 
+@section CSS{
     <style>
         .PreLineSetting {
-            white-space: pre;
+            white-space: pre-wrap;
         }
     </style>
 }
@@ -43,13 +43,63 @@
     <div class="col-6">
         <div class="border border-dark p-3 h-100">
             <div class="h4 text-left d-block">@Html.DisplayFor(model => model.JobRecordsModel.CaseTitle)</div>
+
+
             <div class="d-flex justify-content-between">
-                <div class="h6 text-left d-block m-0">建案時間 : @Html.DisplayFor(model => model.JobRecordsModel.BuildDate)</div>
-                <div class="h6 text-left d-block m-0">建案者 : @Html.DisplayFor(model => model.JobRecordsModel.OnsiteName)</div>
+                <div class="h6 d-block">建案時間 : @Html.DisplayFor(model => model.JobRecordsModel.BuildDate)</div>
+                <div class="h6 d-block">建案者 : @Html.DisplayFor(model => model.JobRecordsModel.OnsiteName)</div>
             </div>
-            <div class="h6 text-left d-block mt-1">電腦名稱 : @Html.DisplayFor(model => model.JobRecordsModel.HostName)</div>
+            <div class="d-flex justify-content-between">
+                <div class="h6 d-block">電腦名稱 : @Html.DisplayFor(model => model.JobRecordsModel.HostName)</div>
+                @foreach (var item in Model.OSVersionList)
+                {
+                    if (Model.JobRecordsModel.OSVersion == item.OSVersionId)
+                    {
+                        <div class="h6 d-block">系統版本 : @item.OSVersionName</div>
+                    }
+                }
+            </div>
+            <div class="d-flex justify-content-between">
+                @foreach (var item in Model.ProductTypeList)
+                {
+                    if (Model.JobRecordsModel.ProductType == item.ProductId)
+                    {
+                        <div class="h6 d-block">產品類型 : @item.ProductName</div>
+                    }
+                }
+                <div class="h6 d-block">案件分類 : @Html.DisplayFor(model => model.JobRecordsModel.Category)</div>
+            </div>
+            @if (Model.JobRecordsModel.CaseStatus == 1)
+            {
+                @foreach (var item in Model.CaseStatusList)
+                {
+                    if (Model.JobRecordsModel.CaseStatus == item.CaseStatusId)
+                    {
+                        <div class="h6 text-left d-block">案件狀態 : @item.CaseStatusName</div>
+                    }
+                }
+            }
+            else if (Model.JobRecordsModel.CaseStatus == 2)
+            {
+                <div class="d-flex justify-content-between">
+                    @foreach (var item in Model.CaseStatusList)
+                    {
+                        if (Model.JobRecordsModel.CaseStatus == item.CaseStatusId)
+                        {
+                            <div class="h6 d-block">案件狀態 : @item.CaseStatusName</div>
+                        }
+                    }
+                    <div class="h6 d-block m-0">關案時間 : @Model.JobRecordsModel.ClosedDate.ToString()</div>
+                </div>
+            }
+
             <hr />
             <div class="h6 PreLineSetting">@Html.DisplayFor(model => model.JobRecordsModel.CaseDescription)</div>
+            <hr />
+            <!-- Button trigger modal -->
+            <button type="submit" class="btn btn-primary" asp-controller="JobRecordSystem">留言</button>
+
+            <!-- Modal -->
         </div>
     </div>
     <div class="col-3">

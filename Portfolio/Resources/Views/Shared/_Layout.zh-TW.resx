@@ -117,20 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Website_contact" xml:space="preserve">
-    <value>聯絡窗口</value>
-  </data>
-  <data name="Website_documents" xml:space="preserve">
-    <value>防毒文件</value>
-  </data>
   <data name="Website_en" xml:space="preserve">
     <value>English</value>
   </data>
-  <data name="Website_index" xml:space="preserve">
-    <value>個人履歷</value>
+  <data name="Website_JobRecordSystem" xml:space="preserve">
+    <value>駐場人員建案系統</value>
   </data>
   <data name="Website_JobRecordSystem_Index" xml:space="preserve">
-    <value>建案系統(舊版)</value>
+    <value>建案系統首頁</value>
+  </data>
+  <data name="Website_LoginSystem" xml:space="preserve">
+    <value>登入系統</value>
+  </data>
+  <data name="Website_LoginSystem_Index" xml:space="preserve">
+    <value>登入系統首頁</value>
   </data>
   <data name="Website_LoginSystem_Login" xml:space="preserve">
     <value>登入</value>
@@ -138,20 +138,14 @@
   <data name="Website_LoginSystem_Logout" xml:space="preserve">
     <value>登出</value>
   </data>
-  <data name="Website_OnsiteCaseSystem" xml:space="preserve">
-    <value>駐廠相關</value>
+  <data name="Website_Profile" xml:space="preserve">
+    <value>個人履歷</value>
   </data>
-  <data name="Website_OnsiteCaseSystem_Index" xml:space="preserve">
-    <value>建案系統</value>
-  </data>
-  <data name="Website_security" xml:space="preserve">
-    <value>資安相關</value>
+  <data name="Website_Security_Tool" xml:space="preserve">
+    <value>資安自動化工具</value>
   </data>
   <data name="Website_title" xml:space="preserve">
     <value>HeisenbergHsueh 作品集網站</value>
-  </data>
-  <data name="Website_tools" xml:space="preserve">
-    <value>防毒工具</value>
   </data>
   <data name="Website_zh" xml:space="preserve">
     <value>繁中</value>

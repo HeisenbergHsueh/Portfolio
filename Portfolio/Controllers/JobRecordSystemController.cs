@@ -10,6 +10,8 @@ using Portfolio.Models.JobRecordSystem;
 using X.PagedList;
 using X.PagedList.Mvc.Core;
 using Microsoft.EntityFrameworkCore;
+//cookie授權
+using Microsoft.AspNetCore.Authorization;
 
 namespace Portfolio.Controllers
 {
@@ -25,7 +27,7 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐場人員建案系統-Index
-        public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, int? Category, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
+        public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
         {
             //宣告一個新的JobRecordsViewModel
             JobRecordsViewModel model = new JobRecordsViewModel();
@@ -58,9 +60,9 @@ namespace Portfolio.Controllers
                 GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.OSVersion == OSVersion);
             }
 
-            if (Category != null)
+            if (!string.IsNullOrEmpty(Category))
             {
-                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Category == Category);
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Category.Contains(Category));
             }
 
             if (!string.IsNullOrEmpty(OnsiteName))
@@ -222,14 +224,52 @@ namespace Portfolio.Controllers
             //撈取與該案件編號相關聯的留言內容
             var GetJobRecordsReplyRelatedData = await _db.JobRecordsReply.Where(j => j.RelatedWithJobRecordsId == id).OrderByDescending(j => j.ReplyDateTime).ToListAsync();
 
+            //將與此電腦名稱相同的過往歷史案件撈出來
             var GetHistoryCaseRecords = await _db.JobRecords.Where(j => j.HostName == GetJobRecordsSingleData.HostName).Where(j => j.BuildDate.CompareTo(GetJobRecordsSingleData.BuildDate)< 0 ).ToListAsync();
 
             JobRecordsSingleCaseViewModel model = new JobRecordsSingleCaseViewModel();
 
+            #region 將Item由數字轉成對應的分類文字
+            model.CaseStatusList = await (from j in _db.JobRecordsCaseStatusItem select j).ToListAsync();
+            model.LocationList = await (from j in _db.JobRecordsLocationItem select j).ToListAsync();
+            model.ProductTypeList = await (from j in _db.JobRecordsProductType select j).ToListAsync();
+            model.OSVersionList = await (from j in _db.JobRecordsOSVersion select j).ToListAsync();
+            model.CategoryList = await (from j in _db.JobRecordsCategory select j).ToListAsync();
+            #endregion
+
+            #region 將Category Item由數字轉成對應的分類文字
+            //Load Category Item
+            List<JobRecordsCategory> CategoryList = await (from c in _db.JobRecordsCategory select c).ToListAsync();
+
+            //將單筆案件內容中的Category Item Id以逗號做分開，並轉成string array
+            string[] CategorySplitToStringArr = GetJobRecordsSingleData.Category.Split(",");
+
+            //宣告一個新的List，接著會進行Item的比對，並將比對到的Category Name存放在此List
+            List<string> CategoryJoinStringArr = new List<string>();
+
+            //開始比對
+            foreach (var item in CategorySplitToStringArr)
+            {
+                for (var i = 0; i < (CategoryList.Count() - 1); i++)
+                {
+                    if(item == CategoryList[i].CategoryId.ToString())
+                    {
+                        CategoryJoinStringArr.Add(CategoryList[i].CategoryName);
+                    }
+                } 
+            }
+
+            //將List中的Category Name以"、"做Join轉成string
+            string CategoryResult = String.Join("、", CategoryJoinStringArr);
+
+            //最後再將轉完的結果放回單一案件的Category欄位中
+            //如此呈現的結果為 : 原本資料庫中的Category欄位值為"1,3" => 轉完後變成"產品問題、網路問題" 
+            GetJobRecordsSingleData.Category = CategoryResult;
+
+            #endregion
+
             model.JobRecordsModel = GetJobRecordsSingleData;
-
             model.JobRecordsReplyModel = GetJobRecordsReplyRelatedData;
-
             model.JobRecordsEnum = GetHistoryCaseRecords;
 
             return View(model);
@@ -237,31 +277,44 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐場人員建案系統-新建案件(Create)
+        [HttpGet]
         public async Task<IActionResult> JobRecordsCreateCase(JobRecordsViewModel model)
         {
-            var GetJobRecordsCaseStatusItem = await (from j in _db.JobRecordsCaseStatusItem select j).ToListAsync();
+            model.LocationList = await (from j in _db.JobRecordsLocationItem select j).ToListAsync();
+            model.ProductTypeList = await (from j in _db.JobRecordsProductType select j).ToListAsync();
+            model.OSVersionList = await (from j in _db.JobRecordsOSVersion select j).ToListAsync();
+            model.CategoryList = await (from j in _db.JobRecordsCategory select j).ToListAsync();
 
-            List<SelectListItem> JobRecordsCaseStatusItemList = new List<SelectListItem>();
-
-            foreach (var item in GetJobRecordsCaseStatusItem)
-            {
-                JobRecordsCaseStatusItemList.Add(new SelectListItem()
-                {
-                    Text = item.CaseStatusName,
-                    Value = item.CaseStatusId.ToString()
-                });
-            }
-
-            model.JobRecordsCaseStatusItemList = JobRecordsCaseStatusItemList;
-
-            return View();
+            return View(model);
         }
 
         [HttpPost, ActionName(nameof(JobRecordsCreateCase))]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> JobRecordsCreateCaseComfirm(JobRecordsViewModel model)
+        public async Task<IActionResult> JobRecordsCreateCaseComfirm(JobRecordsViewModel model, string[] CaseCategory)
         {
-            return View();
+            int GetLastCaseIdFromDB = _db.JobRecords.Max(c => c.CaseId);
+
+            model.JobRecordsModel.CaseId = GetLastCaseIdFromDB + 1;
+
+            model.JobRecordsModel.BuildDate = DateTime.Now;
+
+            model.JobRecordsModel.CaseStatus = 1;
+
+            model.JobRecordsModel.Category = String.Join(",", CaseCategory);
+
+            model.JobRecordsModel.ClosedDate = null;
+
+            model.JobRecordsModel.ClosedOnsiteName = null;
+
+            if(ModelState.IsValid)
+            {
+                _db.Add(model.JobRecordsModel);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction(nameof(JobRecordSystemIndex), "JobRecordSystem");
+            }
+            
+            return View(model.JobRecordsModel);
         }
         #endregion
 

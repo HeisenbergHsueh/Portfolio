@@ -112,7 +112,7 @@ namespace Portfolio.Data
 
                 entity.Property(e => e.OSVersion).IsRequired();
 
-                entity.Property(e => e.Category).IsRequired();
+                entity.Property(e => e.Category).IsRequired().HasMaxLength(20);
 
                 entity.Property(e => e.ClosedDate).HasColumnType("datetime");
 
@@ -128,9 +128,7 @@ namespace Portfolio.Data
 
                 entity.Property(e => e.CategoryId).ValueGeneratedNever();
 
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.CategoryName).IsRequired().HasMaxLength(50);
             });
             #endregion
 

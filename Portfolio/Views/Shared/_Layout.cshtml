@@ -29,16 +29,14 @@
     ViewData["Website_zh"] = Localizer["Website_zh"];
     ViewData["Website_en"] = Localizer["Website_en"];
 
-    ViewData["Website_index"] = Localizer["Website_index"];
-    ViewData["Website_security"] = Localizer["Website_security"];
-    ViewData["Website_documents"] = Localizer["Website_documents"];
-    ViewData["Website_tools"] = Localizer["Website_tools"];
+    ViewData["Website_Profile"] = Localizer["Website_Profile"];
+    ViewData["Website_LoginSystem"] = Localizer["Website_LoginSystem"];
+    ViewData["Website_LoginSystem_Index"] = Localizer["Website_LoginSystem_Index"];
 
-    ViewData["Website_OnsiteCaseSystem"] = Localizer["Website_OnsiteCaseSystem"];
-    ViewData["Website_OnsiteCaseSystem_Index"] = Localizer["Website_OnsiteCaseSystem_Index"];
+    ViewData["Website_JobRecordSystem"] = Localizer["Website_JobRecordSystem"];
     ViewData["Website_JobRecordSystem_Index"] = Localizer["Website_JobRecordSystem_Index"];
 
-    ViewData["Website_contact"] = Localizer["Website_contact"];
+    ViewData["Website_Security_Tool"] = Localizer["Website_Security_Tool"];
 
     ViewData["Website_LoginSystem_Login"] = Localizer["Website_LoginSystem_Login"];
     ViewData["Website_LoginSystem_Logout"] = Localizer["Website_LoginSystem_Logout"];
@@ -78,30 +76,31 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Home" asp-action="Profile">@ViewData["Website_index"]</a>
+                        <a class="nav-link text-white" asp-controller="Home" asp-action="Profile">@ViewData["Website_Profile"]</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                            @ViewData["Website_security"]
+                            @ViewData["Website_LoginSystem"]
                         </a>
                         <div class="dropdown-menu m-0">
-                            <a class="dropdown-item" href="#">@ViewData["Website_documents"]</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">@ViewData["Website_tools"]</a>
+                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="Login">@ViewData["Website_LoginSystem_Index"]</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                            @ViewData["Website_OnsiteCaseSystem"]
+                            @ViewData["Website_JobRecordSystem"]
                         </a>
                         <div class="dropdown-menu m-0">
-                            <a class="dropdown-item" href="#">@ViewData["Website_OnsiteCaseSystem_Index"]</a>
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" asp-controller="JobRecordSystem" asp-action="JobRecordSystemIndex">@ViewData["Website_JobRecordSystem_Index"]</a>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#">@ViewData["Website_contact"]</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                            @ViewData["Website_Security_Tool"]
+                        </a>
+                        <div class="dropdown-menu m-0">
+                            <a class="dropdown-item" href="#">防毒偵測工具</a>
+                        </div>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">

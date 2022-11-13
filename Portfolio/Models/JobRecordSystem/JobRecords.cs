@@ -46,7 +46,7 @@ namespace Portfolio.Models.JobRecordSystem
 
         public int OSVersion { get; set; }
 
-        public int Category { get; set; }
+        public string Category { get; set; }
 
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd hh:mm:ss}")]

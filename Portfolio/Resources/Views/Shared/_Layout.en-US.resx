@@ -117,20 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Website_contact" xml:space="preserve">
-    <value>Contact</value>
-  </data>
-  <data name="Website_documents" xml:space="preserve">
-    <value>Documents</value>
-  </data>
   <data name="Website_en" xml:space="preserve">
     <value>English</value>
   </data>
-  <data name="Website_index" xml:space="preserve">
-    <value>Profile</value>
+  <data name="Website_JobRecordSystem" xml:space="preserve">
+    <value>JobRecord System</value>
   </data>
   <data name="Website_JobRecordSystem_Index" xml:space="preserve">
-    <value>Case System(old)</value>
+    <value>Case System Index</value>
+  </data>
+  <data name="Website_LoginSystem" xml:space="preserve">
+    <value>Login System</value>
+  </data>
+  <data name="Website_LoginSystem_Index" xml:space="preserve">
+    <value>Login System Index</value>
   </data>
   <data name="Website_LoginSystem_Login" xml:space="preserve">
     <value>Login</value>
@@ -138,20 +138,14 @@
   <data name="Website_LoginSystem_Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
-  <data name="Website_OnsiteCaseSystem" xml:space="preserve">
-    <value>Onsite</value>
+  <data name="Website_Profile" xml:space="preserve">
+    <value>Profile</value>
   </data>
-  <data name="Website_OnsiteCaseSystem_Index" xml:space="preserve">
-    <value>Case System</value>
-  </data>
-  <data name="Website_security" xml:space="preserve">
-    <value>Security</value>
+  <data name="Website_Security_Tool" xml:space="preserve">
+    <value>Security Tool</value>
   </data>
   <data name="Website_title" xml:space="preserve">
     <value>HeisenbergHsueh Portfolio</value>
-  </data>
-  <data name="Website_tools" xml:space="preserve">
-    <value>Tools</value>
   </data>
   <data name="Website_zh" xml:space="preserve">
     <value>Chinese</value>
