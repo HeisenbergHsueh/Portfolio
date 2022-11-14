@@ -97,7 +97,7 @@
             <div class="h6 PreLineSetting">@Html.DisplayFor(model => model.JobRecordsModel.CaseDescription)</div>
             <hr />
             <!-- Button trigger modal -->
-            <button type="submit" class="btn btn-primary" asp-controller="JobRecordSystem">留言</button>
+            <a class="btn btn-primary" asp-controller="JobRecordSystem" asp-action="CreateReply" asp-route-id="@Model.JobRecordsModel.CaseId">留言</a>
 
             <!-- Modal -->
         </div>

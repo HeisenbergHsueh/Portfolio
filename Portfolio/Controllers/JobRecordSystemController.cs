@@ -26,7 +26,7 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-Index
+        #region 駐廠人員建案系統-Index
         public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
         {
             //宣告一個新的JobRecordsViewModel
@@ -205,7 +205,7 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-單一Case的詳細內容(Detail)
+        #region 駐廠人員建案系統-單一Case的詳細內容(Detail)
         public async Task<IActionResult> JobRecordsSingleCaseDetail(int? id)
         {
             if(id == null)
@@ -250,7 +250,7 @@ namespace Portfolio.Controllers
             //開始比對
             foreach (var item in CategorySplitToStringArr)
             {
-                for (var i = 0; i < (CategoryList.Count() - 1); i++)
+                for (var i = 0; i < (CategoryList.Count()); i++)
                 {
                     if(item == CategoryList[i].CategoryId.ToString())
                     {
@@ -276,8 +276,9 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-新建案件(Create)
+        #region 駐廠人員建案系統-新建案件(Create)
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> JobRecordsCreateCase(JobRecordsViewModel model)
         {
             model.LocationList = await (from j in _db.JobRecordsLocationItem select j).ToListAsync();
@@ -290,6 +291,7 @@ namespace Portfolio.Controllers
 
         [HttpPost, ActionName(nameof(JobRecordsCreateCase))]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> JobRecordsCreateCaseComfirm(JobRecordsViewModel model, string[] CaseCategory)
         {
             int GetLastCaseIdFromDB = _db.JobRecords.Max(c => c.CaseId);
@@ -318,8 +320,61 @@ namespace Portfolio.Controllers
         }
         #endregion
 
+        #region 駐廠人員建案系統-案件留言(CaseReply)
+        [Authorize]
+        public IActionResult CreateReply(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            bool CheckCaseIdExist = _db.JobRecords.Any(j => j.CaseId == id);
+
+            if(CheckCaseIdExist == false)
+            {
+                return NotFound();
+            }
+
+            ViewData["PassCaseId"] = id;
+
+            return View();
+        }
+
+        [HttpPost, ActionName(nameof(CreateReply))]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CreateReplyConfirm(JobRecordsReply model)
+        {
+            var GetLastReplyRecord = await _db.JobRecordsReply.OrderBy(j => j.ReplyId).LastOrDefaultAsync();
+
+            if (GetLastReplyRecord == null)
+            {
+                model.ReplyId = 1;
+            }
+            else
+            {
+                model.ReplyId = GetLastReplyRecord.ReplyId + 1;
+            }
+
+            model.ReplyDateTime = DateTime.Now;
+
+            if(ModelState.IsValid)
+            {
+                _db.Add(model);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction("JobRecordsSingleCaseDetail", "JobRecordSystem", new { id = model.RelatedWithJobRecordsId});
+            }
+
+            return View(model);
+        }
+        #endregion
+
         #region 駐場人員建案系統-禁止瀏覽頁面(Forbidden)
         #endregion
+
+
 
     }
 }

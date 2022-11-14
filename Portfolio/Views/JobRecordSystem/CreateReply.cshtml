@@ -1,0 +1,40 @@
+﻿@model Portfolio.Models.JobRecordSystem.JobRecordsReply
+
+@{
+    ViewData["GetCaseId"] = ViewData["PassCaseId"];
+}
+
+<div class="row p-3">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <form asp-controller="JobRecordSystem" asp-action="CreateReply">
+            <div class="h4 text-center">案件留言</div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <span asp-validation-for="ReplyContent" class="text-danger text-center d-block"></span>
+            <hr />
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <div class="h4">案件編號</div>
+                    <input type="text" asp-for="RelatedWithJobRecordsId" value="@ViewData["GetCaseId"]" class="form-control" readonly="readonly" />
+                </div>
+                <div class="form-group col-6">
+                    <div class="h4">案件編號</div>
+                    <input type="text" asp-for="ReplyPersonName" value="@User.Identity.Name" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="h4">留言內容</div>
+                <textarea asp-for="ReplyContent" rows="5" class="form-control"></textarea>
+            </div>
+            <div class="text-center">
+                <input class="btn btn-success" type="submit" value="送出">
+            </div>
+        </form>
+    </div>
+    <div class="col-3"></div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -21,6 +21,7 @@ namespace Portfolio.Models.JobRecordSystem
 
         public DateTime ReplyDateTime { get; set; }
 
+        [Required(ErrorMessage = "請輸入留言內容")]
         public string ReplyContent { get; set; }
 
         public string IsThereAttachment { get; set; }

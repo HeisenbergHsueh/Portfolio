@@ -4,23 +4,21 @@
 
 }
 
-@section CSS{
-    <style>
-        .PreLineSetting {
-            white-space: pre-wrap;
-        }
-    </style>
-}
-
 <div class="row p-3">
     <div class="col-3"></div>
     <div class="col-6">
-        <div class="h4 text-center">建立案件</div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <span asp-validation-for="JobRecordsModel.OnsiteName" class="text-danger"></span>
-        <hr />
         <form asp-controller="JobRecordSystem" asp-action="JobRecordsCreateCase">
-
+            <div class="h4 text-center">建立案件</div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <span asp-validation-for="JobRecordsModel.CaseTitle" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.OnsiteName" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.UserName" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.HostName" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.Location" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.ProductType" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.OSVersion" class="text-danger text-center d-block"></span>
+            <span asp-validation-for="JobRecordsModel.CaseDescription" class="text-danger text-center d-block"></span>
+            <hr />
             <div class="form-group">
                 <div class="h6">標題</div>
                 <input type="text" class="form-control" asp-for="JobRecordsModel.CaseTitle" placeholder="請輸入案件標題" />
@@ -94,4 +92,8 @@
     </div>
     <div class="col-3"></div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 
