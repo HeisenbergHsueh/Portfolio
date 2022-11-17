@@ -7,7 +7,7 @@
 <div class="row p-3">
     <div class="col-3"></div>
     <div class="col-6">
-        <form asp-controller="JobRecordSystem" asp-action="JobRecordsCreateCase">
+        <form asp-controller="JobRecordSystem" asp-action="JobRecordsEditCase">
             <div class="h4 text-center">建立案件</div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <span asp-validation-for="JobRecordsModel.CaseTitle" class="text-danger text-center d-block"></span>
@@ -23,10 +23,15 @@
                 <div class="h6">標題</div>
                 <input type="text" class="form-control" asp-for="JobRecordsModel.CaseTitle" placeholder="請輸入案件標題" />
             </div>
+            <div class="d-none">
+                <input type="text" class="form-control" asp-for="JobRecordsModel.CaseId" readonly="readonly" />
+                <input type="text" class="form-control" asp-for="JobRecordsModel.CaseStatus" readonly="readonly" />
+                <input type="datetime" class="form-control" asp-for="JobRecordsModel.BuildDate" readonly="readonly" />
+            </div>
             <div class="form-row">
                 <div class="form-group col-4">
                     <div class="h6">駐場人員帳號</div>
-                    <input type="text" class="form-control mb-1" asp-for="JobRecordsModel.OnsiteName" value="@User.Identity.Name" readonly="readonly" />
+                    <input type="text" class="form-control mb-1" asp-for="JobRecordsModel.OnsiteName" readonly="readonly" />
                 </div>
                 <div class="form-group col-4">
                     <div class="h6">報案人員帳號</div>
@@ -75,10 +80,21 @@
                 <div class="h6">案件分類(可複選)</div>
                 @foreach (var item in Model.CategoryList)
                 {
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" value="@item.CategoryId" name="CaseCategory" />
-                        <label class="form-check-label">@item.CategoryName</label>
-                    </div>
+                    if (Model.JobRecordsModel.Category.Contains(item.CategoryId.ToString()))
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="@item.CategoryId" name="CaseCategory" checked />
+                            <label class="form-check-label">@item.CategoryName</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="@item.CategoryId" name="CaseCategory" />
+                            <label class="form-check-label">@item.CategoryName</label>
+                        </div>
+                    }
+
                 }
             </div>
             <div class="form-group">
@@ -96,4 +112,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
 

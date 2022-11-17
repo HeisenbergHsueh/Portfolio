@@ -320,25 +320,145 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐廠人員建案系統-案件留言(CaseReply)
+        #region 駐場人員建案系統-編輯案件(Edit)
         [Authorize]
-        public IActionResult CreateReply(int? id)
+        public async Task<IActionResult> JobRecordsEditCase(int? id, JobRecordsViewModel model, string[] CaseCategory)
         {
             if(id == null)
             {
                 return NotFound();
             }
 
-            bool CheckCaseIdExist = _db.JobRecords.Any(j => j.CaseId == id);
+            //撈取案件編號與輸入id相同的案件資料
+            var GetJobRecordsSingleData = await _db.JobRecords.FirstOrDefaultAsync(j => j.CaseId == id);
 
-            if(CheckCaseIdExist == false)
+            if (GetJobRecordsSingleData == null)
             {
                 return NotFound();
             }
 
-            ViewData["PassCaseId"] = id;
+            model.JobRecordsModel = GetJobRecordsSingleData;
+            model.LocationList = await (from j in _db.JobRecordsLocationItem select j).ToListAsync();
+            model.ProductTypeList = await (from j in _db.JobRecordsProductType select j).ToListAsync();
+            model.OSVersionList = await (from j in _db.JobRecordsOSVersion select j).ToListAsync();
+            model.CategoryList = await (from j in _db.JobRecordsCategory select j).ToListAsync();
 
-            return View();
+            return View(model);
+        }
+
+        [HttpPost, ActionName(nameof(JobRecordsEditCase))]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> JobRecordsEditCaseConfirm(int? id, JobRecordsViewModel model, string[] CaseCategory)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            model.JobRecordsModel.Category = String.Join(',', CaseCategory);
+
+            if(ModelState.IsValid)
+            {
+                _db.Update(model.JobRecordsModel);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction(nameof(JobRecordsSingleCaseDetail), new { id = model.JobRecordsModel.CaseId });
+            }
+
+            return View(model.JobRecordsModel);
+        }
+        #endregion
+
+        #region 駐場人員建案系統-刪除案件(Delete)
+        public async Task<IActionResult> JobRecordsDeleteCase(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var GetRecordFromDB = await _db.JobRecords.FindAsync(id);
+
+            if (GetRecordFromDB == null)
+            {
+                return NotFound();
+            }
+
+            _db.JobRecords.Remove(GetRecordFromDB);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(JobRecordSystemIndex));
+        }
+        #endregion
+
+        #region 駐場人員建案系統-關閉案件(CloseCase)
+        [Authorize]
+        public async Task<IActionResult> CloseCase(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var GetRecordById = await _db.JobRecords.FindAsync(id);
+
+            if(GetRecordById != null)
+            {
+                JobRecords model = new JobRecords();
+
+                model = GetRecordById;
+
+                model.CaseStatus = 2;
+
+                model.ClosedDate = DateTime.Now;
+
+                model.ClosedOnsiteName = User.Identity.Name.ToString();
+
+                if(ModelState.IsValid)
+                {
+                    _db.Update(model);
+                    await _db.SaveChangesAsync();
+                }
+
+                return RedirectToAction(nameof(JobRecordsSingleCaseDetail), new { id = model.CaseId });
+            }
+            else
+            {
+                return RedirectToAction(nameof(JobRecordForbiddenPage), new { ErrorCode = 2 });
+            }
+
+        }
+        #endregion
+
+        #region 駐廠人員建案系統-案件留言(CaseReply)
+        [Authorize]
+        public async Task<IActionResult> CreateReply(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var CheckCaseIdExist = await _db.JobRecords.FindAsync(id);
+
+            if(CheckCaseIdExist == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                //案件呈現Closed時
+                if(CheckCaseIdExist.CaseStatus == 2)
+                {
+                    return RedirectToAction(nameof(JobRecordForbiddenPage), new { ErrorCode = 1 });
+                }
+                else
+                {
+                    ViewData["PassCaseId"] = id;
+                    return View();
+                }               
+            }
         }
 
         [HttpPost, ActionName(nameof(CreateReply))]
@@ -372,9 +492,25 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐場人員建案系統-禁止瀏覽頁面(Forbidden)
+        [Authorize]
+        public IActionResult JobRecordForbiddenPage(int? ErrorCode)
+        {
+            switch(ErrorCode)
+            {
+                case 1:
+                    ViewData["PassErrorMessage"] = "透過URL嘗試訪問已Closed之案件留言是被禁止的";
+                    break;
+                case 2:
+                    ViewData["PassErrorMessage"] = "此筆Id不存在";
+                    break;
+                default:
+                    ViewData["PassErrorMessage"] = "No Error Message";
+                    break;
+            }
+
+            return View();
+        }
         #endregion
-
-
 
     }
 }

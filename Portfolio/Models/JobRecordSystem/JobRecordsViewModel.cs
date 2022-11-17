@@ -8,6 +8,11 @@ using Portfolio.Models.JobRecordSystem;
 //================================================= 分頁所會使用到的命名空間 =================================================
 using X.PagedList;
 using Microsoft.AspNetCore.Mvc.Rendering;
+//=================================================== 資料欄位驗證會使用到的命名空間 ===================================================
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.IO.Compression;
 
 namespace Portfolio.Models.JobRecordSystem
 {
@@ -36,9 +41,6 @@ namespace Portfolio.Models.JobRecordSystem
         public List<JobRecordsProductType> ProductTypeList { get; set; }
         public List<JobRecordsOSVersion> OSVersionList { get; set; }
         public List<JobRecordsCategory> CategoryList { get; set; }
-
-        //public string[] CaseCategory { get; set; }
-        //public string OnsiteName { get; set; }
         #endregion
     }
 }

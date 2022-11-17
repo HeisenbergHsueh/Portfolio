@@ -401,6 +401,13 @@ namespace Portfolio.Controllers
             return null;
         }
         #endregion
-       
+
+        #region 系統介紹
+        public IActionResult Introduction()
+        {
+            return View();
+        }
+        #endregion
+
     }
 }

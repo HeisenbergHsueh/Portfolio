@@ -25,11 +25,6 @@
                 </tr>
                 @foreach (var item in Model.JobRecordsEnum)
                 {
-                    @*<div class="h6 text-left d-block mt-1">
-                            <a asp-controller="JobRecordSystem" asp-action="JobRecordsSingleCaseDetail" asp-route-id="@item.CaseId">
-                                @Convert.ToDateTime(item.BuildDate).ToString("yyyyMMdd") - 案件紀錄
-                            </a>
-                        </div>*@
                     <tr>
                         <td>@item.CaseId</td>
                         <td>@item.OnsiteName</td>
@@ -43,7 +38,29 @@
     <div class="col-6">
         <div class="border border-dark p-3 h-100">
             <div class="h4 text-left d-block">@Html.DisplayFor(model => model.JobRecordsModel.CaseTitle)</div>
+            <hr />
+            @if (Model.JobRecordsModel.CaseStatus == 1)
+            {
+                @foreach (var item in Model.CaseStatusList)
+                {
+                    if (Model.JobRecordsModel.CaseStatus == item.CaseStatusId)
+                    {
+                        <div class="h6 text-left d-block">案件狀態 : @item.CaseStatusName</div>
+                    }
+                }
+            }
+            else if (Model.JobRecordsModel.CaseStatus == 2)
+            {
+                @foreach (var item in Model.CaseStatusList)
+                {
+                    if (Model.JobRecordsModel.CaseStatus == item.CaseStatusId)
+                    {
+                        <div class="h6 text-left text-danger d-block">案件狀態 : @item.CaseStatusName</div>
+                    }
+                }
 
+
+            }
 
             <div class="d-flex justify-content-between">
                 <div class="h6 d-block">建案時間 : @Html.DisplayFor(model => model.JobRecordsModel.BuildDate)</div>
@@ -69,42 +86,86 @@
                 }
                 <div class="h6 d-block">案件分類 : @Html.DisplayFor(model => model.JobRecordsModel.Category)</div>
             </div>
-            @if (Model.JobRecordsModel.CaseStatus == 1)
-            {
-                @foreach (var item in Model.CaseStatusList)
-                {
-                    if (Model.JobRecordsModel.CaseStatus == item.CaseStatusId)
-                    {
-                        <div class="h6 text-left d-block">案件狀態 : @item.CaseStatusName</div>
-                    }
-                }
-            }
-            else if (Model.JobRecordsModel.CaseStatus == 2)
+            @if (Model.JobRecordsModel.CaseStatus == 2)
             {
                 <div class="d-flex justify-content-between">
-                    @foreach (var item in Model.CaseStatusList)
-                    {
-                        if (Model.JobRecordsModel.CaseStatus == item.CaseStatusId)
-                        {
-                            <div class="h6 d-block">案件狀態 : @item.CaseStatusName</div>
-                        }
-                    }
-                    <div class="h6 d-block m-0">關案時間 : @Model.JobRecordsModel.ClosedDate.ToString()</div>
+                    <div class="h6 d-block">關案人 : @Model.JobRecordsModel.ClosedOnsiteName</div>
+                    <div class="h6 d-block">關案時間 : @Model.JobRecordsModel.ClosedDate.ToString()</div>
                 </div>
             }
 
             <hr />
             <div class="h6 PreLineSetting">@Html.DisplayFor(model => model.JobRecordsModel.CaseDescription)</div>
-            <hr />
-            <!-- Button trigger modal -->
-            <a class="btn btn-primary" asp-controller="JobRecordSystem" asp-action="CreateReply" asp-route-id="@Model.JobRecordsModel.CaseId">留言</a>
+            @if (Model.JobRecordsModel.CaseStatus != 2)
+            {
+                <hr />
+                <a class="btn btn-primary" asp-controller="JobRecordSystem" asp-action="CreateReply" asp-route-id="@Model.JobRecordsModel.CaseId">留言</a>
+                <a class="btn btn-success" asp-controller="JobRecordSystem" asp-action="JobRecordsEditCase" asp-route-id="@Model.JobRecordsModel.CaseId">編輯</a>
+                <!-- Button to Open the Modal -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#CloseCase">關案</button>
 
-            <!-- Modal -->
+                <!-- The Modal -->
+                <div class="modal" id="CloseCase">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">關閉案件</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                確定要關閉案件?
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <a type="button" class="btn btn-primary" asp-controller="JobRecordSystem" asp-action="CloseCase" asp-route-id="@Model.JobRecordsModel.CaseId">確定</a>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Button to Open the Modal -->
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCase">刪除</button>
+
+                <!-- The Modal -->
+                <div class="modal" id="DeleteCase">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">刪除案件</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                確定要刪除案件?
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <a type="button" class="btn btn-success" asp-controller="JobRecordSystem" asp-action="JobRecordsDeleteCase" asp-route-id="@Model.JobRecordsModel.CaseId">確定</a>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
         </div>
     </div>
     <div class="col-3">
         <div class="border border-dark p-3 h-100">
             <div class="h6 text-center mx-1">附件紀錄區</div>
+            <hr />
             @foreach (var item in Model.JobRecordsReplyModel)
             {
                 <div class="h6 text-left d-block mt-1"><span class="text-primary">@item.AttachmentName</span></div>
@@ -119,7 +180,7 @@
         @foreach (var item in Model.JobRecordsReplyModel)
         {
             <div class="border border-dark p-3 mb-3">
-                <div class="h6 text-left d-block m-0">@item.ReplyContent</div>
+                <div class="h6 PreLineSetting text-left d-block m-0">@item.ReplyContent</div>
                 <hr />
                 <div class="d-flex justify-content-between">
                     <div class="h6 text-left d-block m-0">留言時間 : @item.ReplyDateTime</div>

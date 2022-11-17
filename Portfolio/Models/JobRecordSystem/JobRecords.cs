@@ -27,6 +27,7 @@ namespace Portfolio.Models.JobRecordSystem
         [Required(ErrorMessage = "此欄位不可以空白")]
         public string CaseDescription { get; set; }
 
+        [Required(ErrorMessage = "請選擇報案廠區")]
         public int Location { get; set; }
 
         [Required(ErrorMessage = "此欄位不可以空白")]
@@ -42,8 +43,10 @@ namespace Portfolio.Models.JobRecordSystem
         [RegularExpression("^[a-zA-Z][a-zA-Z0-9]{7}$", ErrorMessage = "只允數輸入8位的英文(大小寫皆可)數字")]  //正規表達式 : 只允數輸入8位的英文(大小寫皆可)數字
         public string HostName { get; set; }
 
+        [Required(ErrorMessage = "請選擇產品類型")]
         public int ProductType { get; set; }
 
+        [Required(ErrorMessage = "請選擇系統版本")]
         public int OSVersion { get; set; }
 
         public string Category { get; set; }
