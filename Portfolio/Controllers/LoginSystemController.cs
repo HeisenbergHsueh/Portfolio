@@ -25,6 +25,7 @@ namespace Portfolio.Controllers
 {
     public class LoginSystemController : Controller
     {
+        #region 建構子
         private readonly PortfolioContext _db;
         private readonly IWebHostEnvironment _env;
 
@@ -33,6 +34,7 @@ namespace Portfolio.Controllers
             _db = db;
             _env = env;
         }
+        #endregion
 
         public IActionResult Index()
         {
@@ -337,8 +339,6 @@ namespace Portfolio.Controllers
         [Authorize] //必須要登入帳號才可以使用重設密碼的功能
         public IActionResult ResetPassword()
         {
-            
-
             return View();
         }
 

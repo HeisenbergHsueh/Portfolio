@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.IO;
@@ -20,9 +22,12 @@ namespace Portfolio.Controllers
         #region 建構子
         private PortfolioContext _db;
 
-        public JobRecordSystemController(PortfolioContext db)
+        private readonly string _folder;
+
+        public JobRecordSystemController(PortfolioContext db, IWebHostEnvironment env)
         {
             _db = db;
+            _folder = $@"{env.WebRootPath}\JobRecordSystemAttachment";
         }
         #endregion
 
@@ -492,25 +497,101 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐場人員建案系統-禁止瀏覽頁面(Forbidden)
+        //跳轉頁面
+        //參考資料(1) : https://stackoverflow.com/questions/24700208/mvc-redirect-to-another-page-after-a-four-second-pause/24700476
         [Authorize]
-        public IActionResult JobRecordForbiddenPage(int? ErrorCode)
+        public IActionResult JobRecordForbiddenPage(int? ErrorCode, int? id)
         {
             switch(ErrorCode)
             {
                 case 1:
                     ViewData["PassErrorMessage"] = "透過URL嘗試訪問已Closed之案件留言是被禁止的";
+                    ViewData["PassControllerName"] = "JobRecordSystem";
+                    ViewData["PassActionName"] = "JobRecordSystemIndex";
                     break;
                 case 2:
                     ViewData["PassErrorMessage"] = "此筆Id不存在";
+                    ViewData["PassControllerName"] = "JobRecordSystem";
+                    ViewData["PassActionName"] = "JobRecordSystemIndex";
+                    break;
+                case 3:
+                    ViewData["PassErrorMessage"] = "檔案上傳失敗，檔案大小>1MB";
+                    ViewData["PassControllerName"] = "JobRecordSystem";
+                    ViewData["PassActionName"] = "JobRecordSystemIndex";
+                    ViewData["Passid"] = id;
                     break;
                 default:
                     ViewData["PassErrorMessage"] = "No Error Message";
+                    ViewData["PassControllerName"] = "Home";
+                    ViewData["PassActionName"] = "Profile";
                     break;
             }
 
             return View();
         }
         #endregion
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAttachment(int? id, List<IFormFile> files)
+        {
+            //計算檔案容量
+            var FileSize = files.Sum(f => f.Length);           
+
+            if (FileSize > 1024000)
+            {
+                return RedirectToAction(nameof(JobRecordForbiddenPage), new { ErrorCode = 3, id = id });
+            }
+            else
+            {
+                foreach(var file in files)
+                {
+                    if(file.Length > 0)
+                    {
+                        var FileName = file.FileName;
+                        //預設路徑為JobRecordSystemAttachment目錄下，然後依當天日期創建資料夾，存放當天所上傳的附件
+                        //參考資料 : https://stackoverflow.com/questions/9065598/if-a-folder-does-not-exist-create-it
+                        var FileDirectory = $@"{_folder}\{DateTime.Now.ToString("yyyyMMdd")}";
+                        var FileStoredPath = $@"{FileDirectory}\{FileName}";
+
+                        //確認路徑是否存在，如果不存在，則create當天日期為名的資料夾，如果已經存在，則直接進行附件上傳
+                        bool CheckFilePathExist = Directory.Exists(FileDirectory);
+
+                        if(!CheckFilePathExist)
+                        {
+                            Directory.CreateDirectory(FileDirectory);
+                            using (var stream = new FileStream(FileStoredPath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                        }
+                        else
+                        {
+                            //如果路徑存在，則確認附件檔的檔名是否
+                            bool CheckFileNameExist = System.IO.File.Exists(FileStoredPath);
+                            if(!CheckFileNameExist)
+                            {
+                                using (var stream = new FileStream(FileStoredPath, FileMode.Create))
+                                {
+                                    await file.CopyToAsync(stream);
+                                }
+                            }
+                            else
+                            {
+                                var GetFileNameWithNoExt = Path.GetFileNameWithoutExtension(FileStoredPath);
+                                var GetFileExtension = Path.GetExtension(FileStoredPath);
+                             
+                                using (var stream = new FileStream($@"{FileDirectory}\{GetFileNameWithNoExt}_Modify_{GetFileExtension}", FileMode.Create))
+                                {
+                                    await file.CopyToAsync(stream);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return RedirectToAction(nameof(JobRecordsSingleCaseDetail), new { id = id });
+            }
+        }
 
     }
 }

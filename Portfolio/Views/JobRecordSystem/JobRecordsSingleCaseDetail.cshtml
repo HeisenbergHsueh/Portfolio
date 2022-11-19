@@ -101,10 +101,38 @@
                 <hr />
                 <a class="btn btn-primary" asp-controller="JobRecordSystem" asp-action="CreateReply" asp-route-id="@Model.JobRecordsModel.CaseId">留言</a>
                 <a class="btn btn-success" asp-controller="JobRecordSystem" asp-action="JobRecordsEditCase" asp-route-id="@Model.JobRecordsModel.CaseId">編輯</a>
-                <!-- Button to Open the Modal -->
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#CloseCase">關案</button>
 
-                <!-- The Modal -->
+                <!-- 附件上傳 Button to Open the Modal -->
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#UploadAttachment">附件上傳</button>
+                <!-- 附件上傳 The Modal -->
+                <div class="modal" id="UploadAttachment">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">附件上傳</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <form method="post" enctype="multipart/form-data" asp-controller="JobRecordSystem" asp-action="UploadAttachment" asp-route-id="@Model.JobRecordsModel.CaseId">
+                                <!-- Modal body -->
+                                <div class="modal-body" id="FileUploadFailedMessage">
+                                    <input type="file" name="files" id="MyFile"/>
+                                    <div class="h6 text-danger">上傳之檔案大小請勿超過1MB</div>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <input class="btn btn-warning" id="ToggleDisabled" type="submit" value="上傳" />
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                                </div>
+                            </form>                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 關案 Button to Open the Modal -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#CloseCase">關案</button>
+                <!-- 關案 The Modal -->
                 <div class="modal" id="CloseCase">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -122,7 +150,7 @@
 
                             <!-- Modal footer -->
                             <div class="modal-footer">
-                                <a type="button" class="btn btn-primary" asp-controller="JobRecordSystem" asp-action="CloseCase" asp-route-id="@Model.JobRecordsModel.CaseId">確定</a>
+                                <a type="button" class="btn btn-info" asp-controller="JobRecordSystem" asp-action="CloseCase" asp-route-id="@Model.JobRecordsModel.CaseId">確定</a>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
                             </div>
 
@@ -130,10 +158,9 @@
                     </div>
                 </div>
 
-                <!-- Button to Open the Modal -->
+                <!-- 刪除 Button to Open the Modal -->
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCase">刪除</button>
-
-                <!-- The Modal -->
+                <!-- 刪除 The Modal -->
                 <div class="modal" id="DeleteCase">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -197,3 +224,19 @@
     <div class="col-3"></div>
 </div>
 
+@section Scripts {
+    <script>
+        //用來判斷夾帶附件的功能中，夾帶檔案的大小，上傳大小限制在1MB以內
+        //參考資料 : https://stackoverflow.com/questions/1601455/how-to-check-file-input-size-with-jquery
+        $('#MyFile').bind('change', function () {
+            var FileSize = this.files[0].size;
+            if (FileSize > 1024000) {
+                $('#FileUploadFailedMessage').append('<div class="h6 text-primary" id="ErrorMessage">您夾帶的檔案為 : ' + this.files[0].name + ' 此檔案的大小為 : ' + (FileSize / (1024 * 1024)).toFixed(1) + 'MB 此檔案大小超過1MB</div>');
+                $('#ToggleDisabled').attr('disabled', 'disabled')
+            } else {
+                $('#ErrorMessage').remove();
+                $('#ToggleDisabled').removeAttr('disabled', '')
+            }
+        });
+    </script>
+}

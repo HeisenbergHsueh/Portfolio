@@ -1,5 +1,8 @@
 ﻿@{
     ViewData["ErrorMessage"] = ViewData["PassErrorMessage"];
+    ViewData["ControllerName"] = ViewData["PassControllerName"];
+    ViewData["ActionName"] = ViewData["PassActionName"];
+    ViewData["id"] = ViewData["Passid"];
 }
 
 <div class="row">
@@ -7,10 +10,30 @@
     <div class="col-6">
         <div class="jumbotron m-3">
             <div class="h2 text-center">@ViewData["ErrorMessage"]</div>
-            <img class="mt-3 mx-auto d-block" src="~/Images/Capoo_Holdon.jpg"/>
+            <img class="mt-3 mx-auto d-block" src="~/Images/Capoo_Holdon.jpg" />
+            <div class="h2 text-center">5秒後網頁會跳轉至指定頁面</div>
         </div>
     </div>
     <div class="col-3"></div>
 </div>
+
+@section Scripts {
+    @if (ViewData["Passid"] == null)
+    {
+        <script>
+        setTimeout(function() {
+            window.location.replace('@Url.Action((string)ViewData["ActionName"], (string)ViewData["ControllerName"])')
+        }, 5000);
+        </script>
+    }
+    else
+    {
+        <script>
+        setTimeout(function() {
+            window.location.replace('@Url.Action((string)ViewData["ActionName"], (string)ViewData["ControllerName"], new { id = ViewData["id"] })')
+        }, 5000);
+        </script>
+    }
+}
 
 
