@@ -192,11 +192,25 @@
     <div class="col-3">
         <div class="border border-dark p-3 h-100">
             <div class="h6 text-center mx-1">附件紀錄區</div>
-            <hr />
-            @foreach (var item in Model.JobRecordsReplyModel)
-            {
-                <div class="h6 text-left d-block mt-1"><span class="text-primary">@item.AttachmentName</span></div>
-            }
+            <table class="table">
+                <tr>
+                    <th>附件名稱</th>
+                    <th>上傳者</th>
+                    <th>下載連結</th>
+                </tr>
+                @foreach (var item in Model.JobRecordsReplyModel)
+                {
+                    if(item.IsThereAttachment == "1")
+                    {
+                        <tr>
+                            <td>@item.AttachmentName</td>
+                            <td>@item.ReplyPersonName</td>
+                            <td><a class="text-primary" href="~/JobRecordSystemAttachment/@item.ReplyDateTime.ToString("yyyyMMdd")/@item.AttachmentName" target="_blank">請點此</a></td>
+                        </tr>
+                    }
+                    
+                }
+            </table>
         </div>
     </div>
 </div>
@@ -216,7 +230,7 @@
                 @if (item.IsThereAttachment == "1")
                 {
                     <hr />
-                    <div class="h6 text-left d-block m-0">附件 : <span class="text-primary">@item.AttachmentName</span></div>
+                    <div class="h6 text-left d-block m-0">附件 : <a class="text-primary" href="~/JobRecordSystemAttachment/@item.ReplyDateTime.ToString("yyyyMMdd")/@item.AttachmentName">@item.AttachmentName</a></div>
                 }
             </div>
         }

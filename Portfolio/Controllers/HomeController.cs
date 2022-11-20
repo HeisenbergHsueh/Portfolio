@@ -41,12 +41,13 @@ namespace Portfolio.Controllers
 
         public IActionResult Index()
         {
+            #region 功能測試區
             //string wwwroot_path = _env.WebRootPath.ToString();
             //Console.WriteLine(wwwroot_path);
 
             //MailService mailService = new MailService();
 
-            //mailService.SendMail("nonsensehao@gmail.com");
+            //mailService.SendMail("");
 
             //string AuthCode = mailService.GenerateAuthCode();
 
@@ -64,7 +65,8 @@ namespace Portfolio.Controllers
 
             //CipherServices CS = new CipherServices();
 
-            //CS.PlainTextToCipher("Server=WIN-EH05M9OGGRV;Database=HeisenbergHsueh_Portfolio;Trusted_Connection=True;MultipleActiveResultSets=true", PublicKey);
+            //string EncryptConnectionString = CS.PlainTextToCipher("", PublicKey);
+            #endregion
 
             return View();
         }

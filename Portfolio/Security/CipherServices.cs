@@ -89,7 +89,7 @@ namespace Portfolio.Security
         /// 密文解密(AES非對稱式解密)
         /// </summary>
         /// <param name="Cipher">密文</param>
-        /// <param name="PrivateKey">密鑰</param>
+        /// <param name="PublicKey">密鑰</param>
         /// <returns></returns>
         private string AES_DecryptToString(string Cipher, string PublicKey)
         {

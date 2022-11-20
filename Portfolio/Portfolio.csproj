@@ -16,9 +16,10 @@
 
   <ItemGroup>
     <Folder Include="Models\OnsiteCaseSystem\" />
+    <Folder Include="wwwroot\Images\Introduction\" />
     <Folder Include="wwwroot\Images\Profile\" />
+    <Folder Include="wwwroot\JobRecordSystemAttachment\20221120\" />
     <Folder Include="wwwroot\lib\bootstrap5\" />
-    <Folder Include="wwwroot\JobRecordSystemAttachment\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -275,30 +275,35 @@ namespace Portfolio.Controllers
             return View();
         }
 
+        //任何帳號登入都可以看到此頁面
         [Authorize]
         public IActionResult AuthPage()
         {
             return View();
         }
 
+        //當角色為User的帳號登入時才可以看到此頁面
         [Authorize(Roles = "User")]
         public IActionResult UserPage()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        //當角色為Admin的帳號登入時才可以看到此頁面
+        [Authorize(Roles = "Admin")]
         public IActionResult AdministratorPage()
         {
             return View();
         }
 
+        //當角色為Admin或User其中之一時，登入都可以看到此頁面
         [Authorize(Roles = "User,Administrator")]
         public IActionResult MultipleRolePage()
         {
             return View();
         }
 
+        //使用policy進行權限控管，當角色中含有IT這個角色的帳號，且位於startup.cs中的policy有enabled時，帳號登入可以看到此頁面
         [Authorize(Policy = "IsIT")]
         public IActionResult IT_could_be_browser_Page()
         {

@@ -20,13 +20,14 @@ namespace Portfolio.Controllers
     [ApiController]
     public class WebAPIController : Controller
     {
-        //建構子
+        #region 建構子
         private readonly PortfolioContext _db;
 
         public WebAPIController(PortfolioContext db)
         {
             _db = db;
         }
+        #endregion
 
         // GET: api/<WebAPIController>
         [HttpGet]
@@ -88,5 +89,7 @@ namespace Portfolio.Controllers
             }
         }
         #endregion
+
+
     }
 }

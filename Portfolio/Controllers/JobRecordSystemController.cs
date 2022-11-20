@@ -17,12 +17,21 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Portfolio.Controllers
 {
+    [Authorize]
     public class JobRecordSystemController : Controller
     {
         #region 建構子
         private PortfolioContext _db;
 
         private readonly string _folder;
+
+        private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
+        {
+            {".png", "image/png"},
+            {".jpg", "image/jpeg"},
+            {".jpeg", "image/jpeg"},
+            {".gif", "image/gif"}
+        };
 
         public JobRecordSystemController(PortfolioContext db, IWebHostEnvironment env)
         {
@@ -32,6 +41,7 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐廠人員建案系統-Index
+        [Authorize]
         public IActionResult JobRecordSystemIndex(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName, int Page = 1, int PageSize = 5)
         {
             //宣告一個新的JobRecordsViewModel
@@ -211,6 +221,7 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐廠人員建案系統-單一Case的詳細內容(Detail)
+        [Authorize]
         public async Task<IActionResult> JobRecordsSingleCaseDetail(int? id)
         {
             if(id == null)
@@ -325,7 +336,7 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-編輯案件(Edit)
+        #region 駐廠人員建案系統-編輯案件(Edit)
         [Authorize]
         public async Task<IActionResult> JobRecordsEditCase(int? id, JobRecordsViewModel model, string[] CaseCategory)
         {
@@ -375,7 +386,8 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-刪除案件(Delete)
+        #region 駐廠人員建案系統-刪除案件(Delete)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> JobRecordsDeleteCase(int? id)
         {
             if (id == null)
@@ -397,7 +409,7 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-關閉案件(CloseCase)
+        #region 駐廠人員建案系統-關閉案件(CloseCase)
         [Authorize]
         public async Task<IActionResult> CloseCase(int? id)
         {
@@ -496,7 +508,7 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐場人員建案系統-禁止瀏覽頁面(Forbidden)
+        #region 駐廠人員建案系統-禁止瀏覽頁面(Forbidden)
         //跳轉頁面
         //參考資料(1) : https://stackoverflow.com/questions/24700208/mvc-redirect-to-another-page-after-a-four-second-pause/24700476
         [Authorize]
@@ -531,11 +543,17 @@ namespace Portfolio.Controllers
         }
         #endregion
 
+        #region 駐廠人員建案系統-附件上傳
         [HttpPost]
         public async Task<IActionResult> UploadAttachment(int? id, List<IFormFile> files)
         {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
             //計算檔案容量
-            var FileSize = files.Sum(f => f.Length);           
+            var FileSize = files.Sum(f => f.Length);
 
             if (FileSize > 1024000)
             {
@@ -543,9 +561,9 @@ namespace Portfolio.Controllers
             }
             else
             {
-                foreach(var file in files)
+                foreach (var file in files)
                 {
-                    if(file.Length > 0)
+                    if (file.Length > 0)
                     {
                         var FileName = file.FileName;
                         //預設路徑為JobRecordSystemAttachment目錄下，然後依當天日期創建資料夾，存放當天所上傳的附件
@@ -556,7 +574,7 @@ namespace Portfolio.Controllers
                         //確認路徑是否存在，如果不存在，則create當天日期為名的資料夾，如果已經存在，則直接進行附件上傳
                         bool CheckFilePathExist = Directory.Exists(FileDirectory);
 
-                        if(!CheckFilePathExist)
+                        if (!CheckFilePathExist)
                         {
                             Directory.CreateDirectory(FileDirectory);
                             using (var stream = new FileStream(FileStoredPath, FileMode.Create))
@@ -568,7 +586,7 @@ namespace Portfolio.Controllers
                         {
                             //如果路徑存在，則確認附件檔的檔名是否
                             bool CheckFileNameExist = System.IO.File.Exists(FileStoredPath);
-                            if(!CheckFileNameExist)
+                            if (!CheckFileNameExist)
                             {
                                 using (var stream = new FileStream(FileStoredPath, FileMode.Create))
                                 {
@@ -579,19 +597,39 @@ namespace Portfolio.Controllers
                             {
                                 var GetFileNameWithNoExt = Path.GetFileNameWithoutExtension(FileStoredPath);
                                 var GetFileExtension = Path.GetExtension(FileStoredPath);
-                             
-                                using (var stream = new FileStream($@"{FileDirectory}\{GetFileNameWithNoExt}_Modify_{GetFileExtension}", FileMode.Create))
+                                FileName = $@"{GetFileNameWithNoExt}_Modify_{GetFileExtension}";
+
+                                FileStoredPath = $@"{FileDirectory}\{GetFileNameWithNoExt}_Modify_{GetFileExtension}";
+
+                                using (var stream = new FileStream(FileStoredPath, FileMode.Create))
                                 {
                                     await file.CopyToAsync(stream);
                                 }
                             }
                         }
+
+                        //新增一則上傳附件的留言到案件中
+                        JobRecordsReply model = new JobRecordsReply();
+
+                        var GetLastReplyRecordId = await _db.JobRecordsReply.OrderBy(j => j.ReplyId).LastOrDefaultAsync();
+
+                        model.ReplyId = GetLastReplyRecordId.ReplyId + 1;
+                        model.RelatedWithJobRecordsId = Convert.ToInt32(id);
+                        model.ReplyPersonName = User.Identity.Name.ToString();
+                        model.ReplyDateTime = DateTime.Now;
+                        model.ReplyContent = $@"{DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss")} 上傳附件";
+                        model.IsThereAttachment = "1";
+                        model.AttachmentName = FileName;
+
+                        _db.Add(model);
+                        await _db.SaveChangesAsync();
                     }
                 }
 
                 return RedirectToAction(nameof(JobRecordsSingleCaseDetail), new { id = id });
             }
         }
+        #endregion
 
     }
 }
