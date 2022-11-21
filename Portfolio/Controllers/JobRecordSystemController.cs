@@ -14,6 +14,9 @@ using X.PagedList.Mvc.Core;
 using Microsoft.EntityFrameworkCore;
 //cookie授權
 using Microsoft.AspNetCore.Authorization;
+//NPOI
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace Portfolio.Controllers
 {
@@ -543,7 +546,7 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 駐廠人員建案系統-附件上傳
+        #region 駐廠人員建案系統-附件上傳(UploadAttachment)
         [HttpPost]
         public async Task<IActionResult> UploadAttachment(int? id, List<IFormFile> files)
         {
@@ -628,6 +631,94 @@ namespace Portfolio.Controllers
 
                 return RedirectToAction(nameof(JobRecordsSingleCaseDetail), new { id = id });
             }
+        }
+        #endregion
+
+        #region 駐廠人員建案系統-匯出報表(ExportCaseReport)
+        public IActionResult ExportCaseReport(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName)
+        {
+            var GetJobRecordsAllData = from j in _db.JobRecords select j;
+
+            #region LINQ多條件搜尋
+            if (CaseId != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.CaseId == CaseId);
+            }
+
+            if (CaseStatus != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.CaseStatus == CaseStatus);
+            }
+
+            if (Location != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Location == Location);
+            }
+
+            if (ProductType != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.ProductType == ProductType);
+            }
+
+            if (OSVersion != null)
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.OSVersion == OSVersion);
+            }
+
+            if (!string.IsNullOrEmpty(Category))
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.Category.Contains(Category));
+            }
+
+            if (!string.IsNullOrEmpty(OnsiteName))
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.OnsiteName.Contains(OnsiteName));
+            }
+
+            if (!string.IsNullOrEmpty(UserName))
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.UserName.Contains(UserName));
+            }
+
+            if (!string.IsNullOrEmpty(HostName))
+            {
+                GetJobRecordsAllData = GetJobRecordsAllData.Where(j => j.HostName.Contains(HostName));
+            }
+            #endregion
+
+            var JobRecordsList =
+                from j in GetJobRecordsAllData.ToList().AsEnumerable()
+                let StatusItem = j.CaseStatus.ToString()
+                let LocationItem = j.Location.ToString()
+                let ProductItem = j.ProductType.ToString()
+                let OSItem = j.OSVersion.ToString()
+                let CategoryItem = j.Category.ToString()
+                select new { j.CaseId, StatusItem, j.CaseTitle, j.BuildDate, j.CaseDescription, LocationItem, j.UserName, j.OnsiteName, j.HostName, ProductItem, OSItem, CategoryItem, j.ClosedDate, j.ClosedOnsiteName };
+
+            var newlist = JobRecordsList.ToList();
+
+            #region
+
+            #endregion
+
+            #region 將CaseStatus、Location、ProductType、OSVersion、Category的數值轉換成對應的文字
+            List<JobRecordsCaseStatusItem> CaseStatusList = new List<JobRecordsCaseStatusItem>();
+
+            for(int i = 0; i < newlist.Count(); i++)
+            {
+                
+            }
+            #endregion
+
+            //宣告一個Excel file的物件
+            IWorkbook ExcelFile = new XSSFWorkbook();
+
+            //在Excel file的物件中build一個sheet
+            ISheet Sheet = ExcelFile.CreateSheet(DateTime.Now.ToString("yyyyMMdd") + "_案件總表");
+
+            string[] ColumnName = { "CaseId", "CaseStatus", "CaseTitle", "BuildDate", "CaseDescription", "Location", "UserName", "OnsiteName", "HostName", "ProductType", "OSVersion", "Category", "ClosedDate", "ClosedOnsiteName" };
+
+            return View();
         }
         #endregion
 

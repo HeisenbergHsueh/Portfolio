@@ -407,12 +407,5 @@ namespace Portfolio.Controllers
         }
         #endregion
 
-        #region 系統介紹
-        public IActionResult Introduction()
-        {
-            return View();
-        }
-        #endregion
-
     }
 }

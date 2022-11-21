@@ -42,16 +42,15 @@
                 <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
         </form>
-        <a asp-action="Index" class="btn btn-success">Back to index</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-success">Back to index</a>
     </div>
     <div class="col-md-4"></div>
 </div>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}
 
-<script>
+    <script>
     $('#UserAccount').focusout(function () {
         var GetUserName = $('#UserAccount').val();
         var message = $('#CheckUserNameMessage');
@@ -77,4 +76,6 @@
 
         });
     });
-</script>
+    </script>
+}
+
