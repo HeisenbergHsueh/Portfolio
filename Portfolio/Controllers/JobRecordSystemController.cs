@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 //NPOI
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.HSSF.Util;
 
 namespace Portfolio.Controllers
 {
@@ -635,7 +636,7 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐廠人員建案系統-匯出報表(ExportCaseReport)
-        public IActionResult ExportCaseReport(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName)
+        public async Task<FileContentResult> ExportCaseReport(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName)
         {
             var GetJobRecordsAllData = from j in _db.JobRecords select j;
 
@@ -686,39 +687,179 @@ namespace Portfolio.Controllers
             }
             #endregion
 
-            var JobRecordsList =
-                from j in GetJobRecordsAllData.ToList().AsEnumerable()
-                let StatusItem = j.CaseStatus.ToString()
-                let LocationItem = j.Location.ToString()
-                let ProductItem = j.ProductType.ToString()
-                let OSItem = j.OSVersion.ToString()
-                let CategoryItem = j.Category.ToString()
-                select new { j.CaseId, StatusItem, j.CaseTitle, j.BuildDate, j.CaseDescription, LocationItem, j.UserName, j.OnsiteName, j.HostName, ProductItem, OSItem, CategoryItem, j.ClosedDate, j.ClosedOnsiteName };
+            var JobRecordsList = GetJobRecordsAllData.ToList();
 
-            var newlist = JobRecordsList.ToList();
-
-            #region
-
+            #region 從DB獲取CaseStatus、Location、ProductType、OSVersion、Category的各項Item
+            var StatusList = await _db.JobRecordsCaseStatusItem.ToListAsync();
+            var LocationList = await _db.JobRecordsLocationItem.ToListAsync();
+            var ProductList = await _db.JobRecordsProductType.ToListAsync();
+            var OSList = await _db.JobRecordsOSVersion.ToListAsync();
+            var CategoryList = await _db.JobRecordsCategory.ToListAsync();
             #endregion
 
             #region 將CaseStatus、Location、ProductType、OSVersion、Category的數值轉換成對應的文字
-            List<JobRecordsCaseStatusItem> CaseStatusList = new List<JobRecordsCaseStatusItem>();
+            List<JobRecordsExcelModel> JRWriteToExcelList = new List<JobRecordsExcelModel>();
 
-            for(int i = 0; i < newlist.Count(); i++)
+            foreach (var item in JobRecordsList)
             {
-                
+                string StatusItem = "";
+                string LocationItem = "";
+                string ProductItem = "";
+                string OSItem = "";           
+                string CategoryItem = "";
+                List<string> CategoryArray = new List<string>();
+                string[] CategoryStrArr = { };
+
+                foreach(var s in StatusList)
+                {
+                    if(item.CaseStatus == s.CaseStatusId)
+                    {
+                        StatusItem = s.CaseStatusName;
+                    }
+                }
+
+                foreach(var l in LocationList)
+                {
+                    if(item.Location == l.LocationId)
+                    {
+                        LocationItem = l.LocationName;
+                    }
+                }
+
+                foreach(var p in ProductList)
+                {
+                    if(item.ProductType == p.ProductId)
+                    {
+                        ProductItem = p.ProductName;
+                    }
+                }
+
+                foreach(var o in OSList)
+                {
+                    if(item.OSVersion == o.OSVersionId)
+                    {
+                        OSItem = o.OSVersionName;
+                    }
+                }
+
+                #region 由於Category有複數個選項，因此需先執行Split再Join
+                foreach (var c in CategoryList)
+                {
+                    if (item.Category.Contains(c.CategoryId.ToString()))
+                    {
+                        CategoryArray.Add(c.CategoryName);
+                    }
+                }
+
+                CategoryStrArr = CategoryArray.ToArray();
+                CategoryItem = String.Join('、', CategoryStrArr);
+                #endregion
+
+                JRWriteToExcelList.Add(new JobRecordsExcelModel 
+                {
+                    Id = item.CaseId,
+                    Status = StatusItem,
+                    Title = item.CaseTitle,
+                    BuildDate = item.BuildDate.ToString("yyyy/MM/dd hh:mm:ss"),
+                    Description = item.CaseDescription,
+                    Location = LocationItem,
+                    UserName = item.UserName,
+                    OnsiteName = item.OnsiteName,
+                    HostName = item.HostName,
+                    Product = ProductItem,
+                    OS = OSItem,
+                    Category = CategoryItem,
+                    //參考資料 : https://stackoverflow.com/questions/1833054/how-can-i-format-a-nullable-datetime-with-tostring
+                    ClosedDate = item.ClosedDate.HasValue ? item.ClosedDate.Value.ToString("yyyy/MM/dd hh:mm:ss") : null,
+                    CloseOnsiteName = item.ClosedOnsiteName
+                });
+
             }
+
+            var test = JRWriteToExcelList;
+
             #endregion
 
             //宣告一個Excel file的物件
-            IWorkbook ExcelFile = new XSSFWorkbook();
+            IWorkbook Excel = new XSSFWorkbook();
 
             //在Excel file的物件中build一個sheet
-            ISheet Sheet = ExcelFile.CreateSheet(DateTime.Now.ToString("yyyyMMdd") + "_案件總表");
+            ISheet Sheet = Excel.CreateSheet(DateTime.Now.ToString("yyyyMMdd") + "_案件總表");
 
-            string[] ColumnName = { "CaseId", "CaseStatus", "CaseTitle", "BuildDate", "CaseDescription", "Location", "UserName", "OnsiteName", "HostName", "ProductType", "OSVersion", "Category", "ClosedDate", "ClosedOnsiteName" };
+            //標題列的string array
+            string[] ColumnNameArray = { "案件編號(Id)", "案件狀態(Status)", "案件標題(Title)", "建案日期(BuildDate)", "案件描述(Description)", "廠區(Location)", "報案者(UserName)", "建案者(OnsiteName)", "報案電腦名稱(HostName)", "產品類別(Product)", "系統版本(OS)", "案件分類(Category)", "關案日期(ClosedDate)", "關案者(ClosedOnsiteName)" };
 
-            return View();
+            //標題列樣式
+            ICellStyle TitleRowStyle = Excel.CreateCellStyle();
+            IFont TitleRowFont = Excel.CreateFont();
+            TitleRowStyle.Alignment = HorizontalAlignment.Center;
+            TitleRowFont.FontName = "微軟正黑體";
+            TitleRowFont.FontHeightInPoints = 10;
+            TitleRowStyle.BorderTop = BorderStyle.Thin;
+            TitleRowStyle.BorderBottom = BorderStyle.Thin;
+            TitleRowStyle.BorderLeft = BorderStyle.Thin;
+            TitleRowStyle.BorderRight = BorderStyle.Thin;
+            TitleRowStyle.FillForegroundColor = HSSFColor.LightOrange.Index;
+            TitleRowStyle.FillPattern = FillPattern.SolidForeground;
+            TitleRowStyle.SetFont(TitleRowFont);
+
+            //創建第一列
+            Sheet.CreateRow(0);
+
+            //載入標題列
+            for (int i = 0; i < ColumnNameArray.Length; i++)
+            {
+                Sheet.GetRow(0).CreateCell(i).SetCellValue(ColumnNameArray[i].ToString());
+                Sheet.GetRow(0).GetCell(i).CellStyle = TitleRowStyle;
+                Sheet.AutoSizeColumn(i);
+                GC.Collect();
+            }
+
+            //資料列樣式
+            ICellStyle DataRowStyle = Excel.CreateCellStyle();
+            IFont DataRowFont = Excel.CreateFont();
+            DataRowFont.FontName = "微軟正黑體";
+            DataRowFont.FontHeightInPoints = 10;
+            DataRowStyle.BorderTop = BorderStyle.Thin;
+            DataRowStyle.BorderBottom = BorderStyle.Thin;
+            DataRowStyle.BorderLeft = BorderStyle.Thin;
+            DataRowStyle.BorderRight = BorderStyle.Thin;
+            DataRowStyle.SetFont(DataRowFont);
+
+            //載入資料
+            int rowIndex = 0;
+            for(int row = 1; row < JRWriteToExcelList.Count(); row++)
+            {
+                Sheet.CreateRow(row);
+
+                Sheet.GetRow(row).CreateCell(0).SetCellValue(JRWriteToExcelList[rowIndex].Id);
+                Sheet.GetRow(row).CreateCell(1).SetCellValue(JRWriteToExcelList[rowIndex].Status);
+                Sheet.GetRow(row).CreateCell(2).SetCellValue(JRWriteToExcelList[rowIndex].Title);
+                Sheet.GetRow(row).CreateCell(3).SetCellValue(JRWriteToExcelList[rowIndex].BuildDate);
+                Sheet.GetRow(row).CreateCell(4).SetCellValue(JRWriteToExcelList[rowIndex].Description);
+                Sheet.GetRow(row).CreateCell(5).SetCellValue(JRWriteToExcelList[rowIndex].Location);
+                Sheet.GetRow(row).CreateCell(6).SetCellValue(JRWriteToExcelList[rowIndex].UserName);
+                Sheet.GetRow(row).CreateCell(7).SetCellValue(JRWriteToExcelList[rowIndex].OnsiteName);
+                Sheet.GetRow(row).CreateCell(8).SetCellValue(JRWriteToExcelList[rowIndex].HostName);
+                Sheet.GetRow(row).CreateCell(9).SetCellValue(JRWriteToExcelList[rowIndex].Product);
+                Sheet.GetRow(row).CreateCell(10).SetCellValue(JRWriteToExcelList[rowIndex].OS);
+                Sheet.GetRow(row).CreateCell(11).SetCellValue(JRWriteToExcelList[rowIndex].Category);
+                Sheet.GetRow(row).CreateCell(12).SetCellValue(JRWriteToExcelList[rowIndex].ClosedDate);
+                Sheet.GetRow(row).CreateCell(13).SetCellValue(JRWriteToExcelList[rowIndex].CloseOnsiteName);
+
+
+                for (int j = 0; j < ColumnNameArray.Length; j++)
+                {
+                    Sheet.GetRow(row).GetCell(j).CellStyle = DataRowStyle;
+                }
+                
+                rowIndex++;
+            }
+
+            var memoryStream = new MemoryStream();
+            Excel.Write(memoryStream);
+
+            return File(memoryStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $@"{DateTime.Now.ToString("yyyyMMdd")}_駐廠建案日誌.xlsx");
         }
         #endregion
 

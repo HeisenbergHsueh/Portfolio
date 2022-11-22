@@ -1,7 +1,10 @@
 ﻿@model Portfolio.Models.JobRecordSystem.JobRecordsViewModel
 
 @{
-
+    var WriteToExcelRouteVal = new Dictionary<string, string>
+    {
+        { "CaseId", (string)ViewData["CaseId"] },
+    };
 }
 
 @section CSS {
@@ -21,7 +24,7 @@
                 <a asp-controller="JobRecordSystem" asp-action="JobRecordsCreateCase" class="btn-sm btn-primary">建立新案件</a>
                 <a class="btn-sm btn-warning">批次建案</a>
                 <a class="btn-sm btn-info">批次留言</a>
-                <a class="btn-sm btn-success" asp-controller="JobRecordSystem" asp-action="ExportCaseReport">匯出案件總表</a>
+                <a class="btn-sm btn-success" asp-controller="JobRecordSystem" asp-action="ExportCaseReport" asp-route-CaseId="@ViewData["CaseId"]">匯出案件總表</a>
             </div>
         </div>
 
