@@ -168,9 +168,9 @@ namespace Portfolio.Controllers
 
             List<SelectListItem> JobRecordsProductTypeItemList = new List<SelectListItem>();
 
-            foreach(var item in GetJobRecordsProductTypeItem)
+            foreach (var item in GetJobRecordsProductTypeItem)
             {
-                JobRecordsProductTypeItemList.Add(new SelectListItem() 
+                JobRecordsProductTypeItemList.Add(new SelectListItem()
                 {
                     Text = item.ProductName,
                     Value = item.ProductId.ToString()
@@ -219,7 +219,7 @@ namespace Portfolio.Controllers
 
             //將所query出來的資料，依照ID由大到小排序，轉成ToList之後，再轉成PagedList，然後再放入ViewModel中的PagedList中
             model.JobRecordsPagedList = GetJobRecordsAllData.OrderByDescending(j => j.CaseId).ToList().ToPagedList(Page, PageSize);
-          
+
             return View(model);
         }
         #endregion
@@ -228,7 +228,7 @@ namespace Portfolio.Controllers
         [Authorize]
         public async Task<IActionResult> JobRecordsSingleCaseDetail(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -236,7 +236,7 @@ namespace Portfolio.Controllers
             //撈取案件編號與輸入id相同的案件資料
             var GetJobRecordsSingleData = await _db.JobRecords.FirstOrDefaultAsync(j => j.CaseId == id);
 
-            if(GetJobRecordsSingleData == null)
+            if (GetJobRecordsSingleData == null)
             {
                 return NotFound();
             }
@@ -245,7 +245,7 @@ namespace Portfolio.Controllers
             var GetJobRecordsReplyRelatedData = await _db.JobRecordsReply.Where(j => j.RelatedWithJobRecordsId == id).OrderByDescending(j => j.ReplyDateTime).ToListAsync();
 
             //將與此電腦名稱相同的過往歷史案件撈出來
-            var GetHistoryCaseRecords = await _db.JobRecords.Where(j => j.HostName == GetJobRecordsSingleData.HostName).Where(j => j.BuildDate.CompareTo(GetJobRecordsSingleData.BuildDate)< 0 ).ToListAsync();
+            var GetHistoryCaseRecords = await _db.JobRecords.Where(j => j.HostName == GetJobRecordsSingleData.HostName).Where(j => j.BuildDate.CompareTo(GetJobRecordsSingleData.BuildDate) < 0).ToListAsync();
 
             JobRecordsSingleCaseViewModel model = new JobRecordsSingleCaseViewModel();
 
@@ -272,11 +272,11 @@ namespace Portfolio.Controllers
             {
                 for (var i = 0; i < (CategoryList.Count()); i++)
                 {
-                    if(item == CategoryList[i].CategoryId.ToString())
+                    if (item == CategoryList[i].CategoryId.ToString())
                     {
                         CategoryJoinStringArr.Add(CategoryList[i].CategoryName);
                     }
-                } 
+                }
             }
 
             //將List中的Category Name以"、"做Join轉成string
@@ -328,14 +328,14 @@ namespace Portfolio.Controllers
 
             model.JobRecordsModel.ClosedOnsiteName = null;
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _db.Add(model.JobRecordsModel);
                 await _db.SaveChangesAsync();
 
                 return RedirectToAction(nameof(JobRecordSystemIndex), "JobRecordSystem");
             }
-            
+
             return View(model.JobRecordsModel);
         }
         #endregion
@@ -344,7 +344,7 @@ namespace Portfolio.Controllers
         [Authorize]
         public async Task<IActionResult> JobRecordsEditCase(int? id, JobRecordsViewModel model, string[] CaseCategory)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -378,7 +378,7 @@ namespace Portfolio.Controllers
 
             model.JobRecordsModel.Category = String.Join(',', CaseCategory);
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _db.Update(model.JobRecordsModel);
                 await _db.SaveChangesAsync();
@@ -417,14 +417,14 @@ namespace Portfolio.Controllers
         [Authorize]
         public async Task<IActionResult> CloseCase(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var GetRecordById = await _db.JobRecords.FindAsync(id);
 
-            if(GetRecordById != null)
+            if (GetRecordById != null)
             {
                 JobRecords model = new JobRecords();
 
@@ -436,7 +436,7 @@ namespace Portfolio.Controllers
 
                 model.ClosedOnsiteName = User.Identity.Name.ToString();
 
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     _db.Update(model);
                     await _db.SaveChangesAsync();
@@ -456,21 +456,21 @@ namespace Portfolio.Controllers
         [Authorize]
         public async Task<IActionResult> CreateReply(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var CheckCaseIdExist = await _db.JobRecords.FindAsync(id);
 
-            if(CheckCaseIdExist == null)
+            if (CheckCaseIdExist == null)
             {
                 return NotFound();
             }
             else
             {
                 //案件呈現Closed時
-                if(CheckCaseIdExist.CaseStatus == 2)
+                if (CheckCaseIdExist.CaseStatus == 2)
                 {
                     return RedirectToAction(nameof(JobRecordForbiddenPage), new { ErrorCode = 1 });
                 }
@@ -478,7 +478,7 @@ namespace Portfolio.Controllers
                 {
                     ViewData["PassCaseId"] = id;
                     return View();
-                }               
+                }
             }
         }
 
@@ -500,12 +500,12 @@ namespace Portfolio.Controllers
 
             model.ReplyDateTime = DateTime.Now;
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _db.Add(model);
                 await _db.SaveChangesAsync();
 
-                return RedirectToAction("JobRecordsSingleCaseDetail", "JobRecordSystem", new { id = model.RelatedWithJobRecordsId});
+                return RedirectToAction("JobRecordsSingleCaseDetail", "JobRecordSystem", new { id = model.RelatedWithJobRecordsId });
             }
 
             return View(model);
@@ -518,7 +518,7 @@ namespace Portfolio.Controllers
         [Authorize]
         public IActionResult JobRecordForbiddenPage(int? ErrorCode, int? id)
         {
-            switch(ErrorCode)
+            switch (ErrorCode)
             {
                 case 1:
                     ViewData["PassErrorMessage"] = "透過URL嘗試訪問已Closed之案件留言是被禁止的";
@@ -536,6 +536,11 @@ namespace Portfolio.Controllers
                     ViewData["PassActionName"] = "JobRecordSystemIndex";
                     ViewData["Passid"] = id;
                     break;
+                case 4:
+                    ViewData["PassErrorMessage"] = "Excel匯入失敗，可能原因 : 未夾帶Excel檔案或檔案大小>1MB";
+                    ViewData["PassControllerName"] = "JobRecordSystem";
+                    ViewData["PassActionName"] = "JobRecordSystemIndex";
+                    break;
                 default:
                     ViewData["PassErrorMessage"] = "No Error Message";
                     ViewData["PassControllerName"] = "Home";
@@ -551,7 +556,7 @@ namespace Portfolio.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadAttachment(int? id, List<IFormFile> files)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -705,38 +710,38 @@ namespace Portfolio.Controllers
                 string StatusItem = "";
                 string LocationItem = "";
                 string ProductItem = "";
-                string OSItem = "";           
+                string OSItem = "";
                 string CategoryItem = "";
                 List<string> CategoryArray = new List<string>();
                 string[] CategoryStrArr = { };
 
-                foreach(var s in StatusList)
+                foreach (var s in StatusList)
                 {
-                    if(item.CaseStatus == s.CaseStatusId)
+                    if (item.CaseStatus == s.CaseStatusId)
                     {
                         StatusItem = s.CaseStatusName;
                     }
                 }
 
-                foreach(var l in LocationList)
+                foreach (var l in LocationList)
                 {
-                    if(item.Location == l.LocationId)
+                    if (item.Location == l.LocationId)
                     {
                         LocationItem = l.LocationName;
                     }
                 }
 
-                foreach(var p in ProductList)
+                foreach (var p in ProductList)
                 {
-                    if(item.ProductType == p.ProductId)
+                    if (item.ProductType == p.ProductId)
                     {
                         ProductItem = p.ProductName;
                     }
                 }
 
-                foreach(var o in OSList)
+                foreach (var o in OSList)
                 {
-                    if(item.OSVersion == o.OSVersionId)
+                    if (item.OSVersion == o.OSVersionId)
                     {
                         OSItem = o.OSVersionName;
                     }
@@ -755,7 +760,7 @@ namespace Portfolio.Controllers
                 CategoryItem = String.Join('、', CategoryStrArr);
                 #endregion
 
-                JRWriteToExcelList.Add(new JobRecordsExcelModel 
+                JRWriteToExcelList.Add(new JobRecordsExcelModel
                 {
                     Id = item.CaseId,
                     Status = StatusItem,
@@ -828,7 +833,7 @@ namespace Portfolio.Controllers
 
             //載入資料
             int rowIndex = 0;
-            for(int row = 1; row < JRWriteToExcelList.Count(); row++)
+            for (int row = 1; row <= JRWriteToExcelList.Count(); row++)
             {
                 Sheet.CreateRow(row);
 
@@ -852,7 +857,7 @@ namespace Portfolio.Controllers
                 {
                     Sheet.GetRow(row).GetCell(j).CellStyle = DataRowStyle;
                 }
-                
+
                 rowIndex++;
             }
 
@@ -860,6 +865,69 @@ namespace Portfolio.Controllers
             Excel.Write(memoryStream);
 
             return File(memoryStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $@"{DateTime.Now.ToString("yyyyMMdd")}_駐廠建案日誌.xlsx");
+        }
+        #endregion
+
+        #region 駐廠人員建案系統-匯入報表建案(ImportCaseReport)
+        [HttpPost]
+        public async Task<IActionResult> ImportCaseReport(IFormFile CaseReportFile)
+        {
+            //計算檔案容量
+            var FileSize = CaseReportFile.Length;
+            if (CaseReportFile == null || FileSize == 0 || FileSize > 1024000)
+            {
+                return RedirectToAction(nameof(JobRecordForbiddenPage), new { ErrorCode = 4 });
+            }
+
+            List<JobRecords> StoredRecordList = new List<JobRecords>();
+
+
+            IWorkbook Excel = WorkbookFactory.Create(CaseReportFile.OpenReadStream(), ImportOption.All);
+
+            //取第一個sheet
+            ISheet sheet = Excel.GetSheetAt(0);
+
+            //取第0列欄位數
+            IRow TitleRow = sheet.GetRow(0);
+            int cellCount = TitleRow.LastCellNum;
+
+            //取第1列開始處理資料
+            for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
+            {
+                IRow row = sheet.GetRow(i);
+                if (row == null) continue;
+
+                JobRecords StoredRecordModel = new JobRecords();
+
+
+                foreach (var num in Enumerable.Range(0, 8))
+                {
+                    ICell cell = row.GetCell(num);
+
+                    if (cell == null)
+                    {
+                        return RedirectToAction(nameof(JobRecordForbiddenPage));
+                    }
+                }
+
+                string Location = "";
+
+                StoredRecordModel.CaseTitle = row.GetCell(2).ToString();
+                StoredRecordModel.CaseDescription = row.GetCell(3).ToString();
+                StoredRecordModel.Location = Convert.ToInt32(row.GetCell(4));
+                StoredRecordModel.UserName = row.GetCell(5).ToString();
+                StoredRecordModel.OnsiteName = row.GetCell(6).ToString();
+                StoredRecordModel.HostName = row.GetCell(7).ToString();
+                StoredRecordModel.ProductType = Convert.ToInt32(row.GetCell(8));
+                StoredRecordModel.OSVersion = Convert.ToInt32(row.GetCell(9));
+                StoredRecordModel.Category = row.GetCell(10).ToString();
+
+                StoredRecordList.Add(StoredRecordModel);
+            }
+
+
+
+            return RedirectToAction(nameof(JobRecordSystemIndex));
         }
         #endregion
 

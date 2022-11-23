@@ -1,15 +1,12 @@
 ﻿@model Portfolio.Models.JobRecordSystem.JobRecordsViewModel
 
 @{
-    var WriteToExcelRouteVal = new Dictionary<string, string>
-    {
-        { "CaseId", (string)ViewData["CaseId"] },
-    };
+
 }
 
 @section CSS {
     <style>
-        .border_width_1px{
+        .border_width_1px {
             border-width: 1px;
         }
     </style>
@@ -22,9 +19,41 @@
         <div class="row mx-auto justify-content-start align-items-start mt-3">
             <div class="mb-0">
                 <a asp-controller="JobRecordSystem" asp-action="JobRecordsCreateCase" class="btn-sm btn-primary">建立新案件</a>
-                <a class="btn-sm btn-warning">批次建案</a>
+
+                <!-- 批次建案 Button to Open the Modal -->
+                <a class="btn-sm btn-warning" data-toggle="modal" data-target="#ImportCaseReport">批次建案</a>
+
+                <!-- 批次建案 The Modal -->
+                <div class="modal" id="ImportCaseReport">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">批次建案</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <form method="post" enctype="multipart/form-data" asp-controller="JobRecordSystem" asp-action="ImportCaseReport">
+                                <!-- Modal body -->
+                                <div class="modal-body" id="FileUploadFailedMessage">
+                                    <input type="file" name="CaseReportFile" id="MyFile" accept=".xlsx,.xls"/>
+                                    <div class="h6 text-danger">上傳之檔案大小請勿超過1MB</div>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <input class="btn btn-warning" id="ToggleDisabled" type="submit" value="上傳" />
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <a class="btn-sm btn-info">批次留言</a>
-                <a class="btn-sm btn-success" asp-controller="JobRecordSystem" asp-action="ExportCaseReport" asp-route-CaseId="@ViewData["CaseId"]">匯出案件總表</a>
+                <a class="btn-sm btn-success" asp-controller="JobRecordSystem" asp-action="ExportCaseReport" asp-route-CaseId="@ViewData["CaseId"]"
+                   asp-route-UserName="@ViewData["UserName"]" asp-route-HostName="@ViewData["HostName"]" asp-route-CaseStatus="@ViewData["CaseStatus"]"
+                   asp-route-Location="@ViewData["Location"]" asp-route-OnsiteName="@ViewData["OnsiteName"]" asp-route-ProductType="@ViewData["ProductType"]"
+                   asp-route-OSVersion="@ViewData["OSVersion"]">匯出案件總表</a>
             </div>
         </div>
 
@@ -172,3 +201,19 @@
     <div class="col-1"></div>
 </div>
 
+@section Scripts {
+    <script>
+        //用來判斷夾帶附件的功能中，夾帶檔案的大小，上傳大小限制在1MB以內
+        //參考資料 : https://stackoverflow.com/questions/1601455/how-to-check-file-input-size-with-jquery
+        $('#MyFile').bind('change', function () {
+            var FileSize = this.files[0].size;
+            if (FileSize > 1024000) {
+                $('#FileUploadFailedMessage').append('<div class="h6 text-primary" id="ErrorMessage">您夾帶的檔案為 : ' + this.files[0].name + ' 此檔案的大小為 : ' + (FileSize / (1024 * 1024)).toFixed(1) + 'MB 此檔案大小超過1MB</div>');
+                $('#ToggleDisabled').attr('disabled', 'disabled')
+            } else {
+                $('#ErrorMessage').remove();
+                $('#ToggleDisabled').removeAttr('disabled', '')
+            }
+        });
+    </script>
+}
