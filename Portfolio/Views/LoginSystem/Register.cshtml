@@ -1,15 +1,16 @@
 ﻿@model Portfolio.Models.LoginSystem.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Registration";
+    ViewData["Message"] = ViewData["PassMessage"];
 }
 
-<h1 class="text-center">Registration</h1>
+<h1 class="text-center">HeisenbergHsueh 作品集網站 註冊頁面</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
+        <span class="text-center text-danger">@ViewData["Message"]</span>
         <form asp-action="Register">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -39,10 +40,10 @@
                 <span asp-validation-for="UserEmail" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary" />
+                <input type="submit" id="ToggleDisabled" value="Submit" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-success">Back to index</a>
             </div>
         </form>
-        <a asp-controller="Home" asp-action="Index" class="btn btn-success">Back to index</a>
     </div>
     <div class="col-md-4"></div>
 </div>
@@ -64,14 +65,17 @@
                 if (msg) {
                     message.css('color', 'red');
                     message.html('<br />User account already exist.<br />')
+                    $('#ToggleDisabled').attr('disabled', 'disabled')
                 } else {
                     message.css('color', 'green');
                     message.html('<br />User account could be use.<br />')
+                    $('#ToggleDisabled').removeAttr('disabled', '')
                 }
             },
             error: function (req, status, error) {
                 message.css('color', 'red');
                 message.html('<br />post error.<br />')
+                $('#ToggleDisabled').attr('disabled', 'disabled')
             }
 
         });

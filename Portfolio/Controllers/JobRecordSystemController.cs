@@ -537,7 +537,12 @@ namespace Portfolio.Controllers
                     ViewData["Passid"] = id;
                     break;
                 case 4:
-                    ViewData["PassErrorMessage"] = "Excel匯入失敗，可能原因 : 未夾帶Excel檔案或檔案大小>1MB";
+                    ViewData["PassErrorMessage"] = "Excel匯入失敗，原因 : 未夾帶Excel檔案或檔案大小>1MB";
+                    ViewData["PassControllerName"] = "JobRecordSystem";
+                    ViewData["PassActionName"] = "JobRecordSystemIndex";
+                    break;
+                case 5:
+                    ViewData["PassErrorMessage"] = "Excel匯入失敗，原因 : 儲存格存有空值";
                     ViewData["PassControllerName"] = "JobRecordSystem";
                     ViewData["PassActionName"] = "JobRecordSystemIndex";
                     break;
@@ -891,11 +896,18 @@ namespace Portfolio.Controllers
             IRow TitleRow = sheet.GetRow(0);
             int cellCount = TitleRow.LastCellNum;
 
+            var LocationList = await  _db.JobRecordsLocationItem.ToListAsync();
+            var ProductList = await _db.JobRecordsProductType.ToListAsync();
+            var OSList = await _db.JobRecordsOSVersion.ToListAsync();
+            var CategoryList = await _db.JobRecordsCategory.ToListAsync();
+            var CurrentCaseId = await _db.JobRecords.MaxAsync(j => j.CaseId) + 1;
+
             //取第1列開始處理資料
             for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
             {
                 IRow row = sheet.GetRow(i);
                 if (row == null) continue;
+                if (row.Cells.All(d => d.CellType == CellType.Blank)) continue;
 
                 JobRecords StoredRecordModel = new JobRecords();
 
@@ -906,30 +918,84 @@ namespace Portfolio.Controllers
 
                     if (cell == null)
                     {
-                        return RedirectToAction(nameof(JobRecordForbiddenPage));
+                        return RedirectToAction(nameof(JobRecordForbiddenPage), new { ErrorCode = 5 });
                     }
                 }
 
-                string Location = "";
+                int Location = 0;
+                int Product = 0;
+                int OS = 0;
+                string Category = "";
+                List<string> CategoryArray = new List<string>();
 
-                StoredRecordModel.CaseTitle = row.GetCell(2).ToString();
-                StoredRecordModel.CaseDescription = row.GetCell(3).ToString();
-                StoredRecordModel.Location = Convert.ToInt32(row.GetCell(4));
-                StoredRecordModel.UserName = row.GetCell(5).ToString();
-                StoredRecordModel.OnsiteName = row.GetCell(6).ToString();
-                StoredRecordModel.HostName = row.GetCell(7).ToString();
-                StoredRecordModel.ProductType = Convert.ToInt32(row.GetCell(8));
-                StoredRecordModel.OSVersion = Convert.ToInt32(row.GetCell(9));
-                StoredRecordModel.Category = row.GetCell(10).ToString();
+                foreach(var item in LocationList)
+                {
+                    if(row.GetCell(2).ToString() == item.LocationName)
+                    {
+                        Location = item.LocationId;
+                    }
+                }
+
+                foreach (var item in ProductList)
+                {
+                    if (row.GetCell(6).ToString() == item.ProductName)
+                    {
+                        Product = item.ProductId;
+                    }
+                }
+
+                foreach (var item in OSList)
+                {
+                    if (row.GetCell(7).ToString() == item.OSVersionName)
+                    {
+                        OS = item.OSVersionId;
+                    }
+                }
+
+                foreach(var item in CategoryList)
+                {
+                    if(row.GetCell(8).ToString().Contains(item.CategoryName))
+                    {
+                        CategoryArray.Add(item.CategoryId.ToString());
+                    }
+                }
+
+                Category = String.Join('、', CategoryArray);
+
+                StoredRecordModel.CaseTitle = row.GetCell(0).ToString();
+                StoredRecordModel.CaseDescription = row.GetCell(1).ToString();
+                StoredRecordModel.Location = Location;
+                StoredRecordModel.UserName = row.GetCell(3).ToString();
+                StoredRecordModel.OnsiteName = row.GetCell(4).ToString();
+                StoredRecordModel.HostName = row.GetCell(5).ToString();
+                StoredRecordModel.ProductType = Product;
+                StoredRecordModel.OSVersion = OS;
+                StoredRecordModel.Category = Category;
+
+                //系統自行設定的參數
+                StoredRecordModel.CaseId = CurrentCaseId;
+                StoredRecordModel.CaseStatus = 1;
+                StoredRecordModel.BuildDate = DateTime.Now;
 
                 StoredRecordList.Add(StoredRecordModel);
+
+                CurrentCaseId++;
             }
 
-
-
+            if(ModelState.IsValid)
+            {
+                await _db.AddRangeAsync(StoredRecordList);
+                await _db.SaveChangesAsync();
+            }
+            
             return RedirectToAction(nameof(JobRecordSystemIndex));
         }
         #endregion
 
+        #region 駐廠人員建案系統-匯入報表留言(ImportCaseReply)
+        #endregion
+
+        #region 駐廠人員建案系統-匯入報表關案(ImportCloseCase)
+        #endregion
     }
 }

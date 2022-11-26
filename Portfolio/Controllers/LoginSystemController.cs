@@ -223,6 +223,16 @@ namespace Portfolio.Controllers
             UserLogin result = new UserLogin();
             ComputeToHash computeToHash = new ComputeToHash();
 
+            //為防止前端javascript驗證帳號功能因瀏覽器版本或其他原因而失效
+            //因此當資料真正拋到後端時，必須再進行一次驗證
+            var QueryUserData = GetUserDataByAccount(model.UserAccount);
+
+            if(QueryUserData != null)
+            {
+                ViewData["PassMessage"] = "此帳號已被註冊，請重新填寫另一組可使用的帳號，謝謝";
+                return View();
+            }
+
             result.UserAccount = model.UserAccount;
             
             //隨機產生一組GUID當作salt
