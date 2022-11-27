@@ -1,0 +1,84 @@
+﻿@{
+    
+}
+
+<div class="row p-3">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="h4 font-weight-bold">駐廠人員建案系統架構說明</div>
+        <ul>
+            請使用下列帳號登入進行瀏覽，謝謝
+            <li>帳號 : User、密碼 : 123456</li>
+            <li>帳號 : Admin、密碼 : Admin</li>
+        </ul>
+        <p class="h6 my-2 text-danger">備註 : 用來存放建案資料與留言資料的資料表每天早上1:00(台灣時區為準)會自動還原成網站最初上架的資料表(就是下面兩張圖)</p>
+        <p class="h6 my-2 text-danger">因此若有因為測試功能而新增資料、編輯資料、刪除資料，資料會在隔天還原，還請注意，謝謝</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_027.png" />
+        <img class="w-100 mt-2" src="~/Images/Introduction/JobRecordSystem_029.png" />
+
+        <div class="h4 font-weight-bold mt-3">建案系統首頁</div>
+        <hr />
+        <p class="h6 my-2">在瀏覽建案系統首頁之前，還請記得進行登入，若未登入，系統會跳轉到登入頁面，請看下圖</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_001.png" />
+        <p class="h6 my-2">登入之後，會進入到建案系統的首頁，首頁可以看到目前系統內所有的案件數、案件的細項(例如 : 建案時間、建案的駐廠人員、因甚麼原因而建案......)</p>
+        <p class="h6 my-2">在同一個頁面上還會有[新增案件]、[批次建案]、[匯出案件總表]等功能，下面會一一解釋這些功能</p>
+        <p class="h6 my-2">而在進階搜尋的部分，可以使用單條件或多條件進行案件的搜尋</p>
+        <p class="h6 my-2 text-danger">備註 : [批次留言]的部分尚未實作，因此這個按鈕點了是不會有反應的，謝謝</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_003.png" />
+
+        <div class="h4 font-weight-bold mt-3">新增案件</div>
+        <hr />
+        <p class="h6 my-2">在[新增案件]的部分，建案人的部分會是綁定登入者的帳號，因此那一欄會是呈現反灰無法被使用者修改，如下圖</p>
+        <p class="h6 my-2">而報案廠區、報案人員帳號、系統版本，採用下拉式選單的方式呈現，是一個單選的下拉式選單</p>
+        <p class="h6 my-2">案件類型則為複選的checkbox</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_005.png" />
+        <p class="h6 my-2">在此表單中，也已經實作了表單驗證的功能，如果有不符合驗證規則的部分，則會跳出相對應的alert提示，如下圖</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_031.png" />
+
+        <div class="h4 font-weight-bold mt-3">案件詳細內容</div>
+        <hr />
+        <p class="h6 my-2">建案完成後，可點選案件最右邊的[詳細內容]，查看案件的詳細資訊，如下圖</p>
+        <p class="h6 my-2">詳細內容主要分幾個區塊，最右側的是[歷史紀錄區]，此區塊會以建案的電腦名稱為關鍵字，找出小於此筆案件建案時間之前的同樣電腦名稱的案件，以供駐廠人員檢視</p>
+        <p class="h6 my-2">中間的區塊，為案件資料主要紀錄的區塊，會記錄此案件的一些相關detail</p>
+        <p class="h6 my-2">而下方的區塊，則是提供其他登入者針對該筆案件進行留言使用的留言板</p>
+        <p class="h6 my-2">最右邊的區塊，則是有上傳附件時，會將與該筆案件有關的附件內容列於右側區塊的清單內，方便人員檢視</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_033.png" />
+        <p class="h6 my-2">按下[留言]按鈕後，會跳到留言的頁面，此頁面僅會顯示欲留言的案件編號&當前登入者的帳號以及留言內容的區塊，如下圖</p>
+        <p class="h6 my-2">送出留言後，後端會協助將當下的時間、綁定的案件編號、留言的編號一併處理好之後才寫入DB</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_035.png" />
+
+        <div class="h4 font-weight-bold mt-3">編輯案件</div>
+        <hr />
+        <p class="h6 my-2">點選[留言]按鈕後，會跳到編輯的頁面，此頁面會將案件內容從DB撈出來讓使用者進行編輯，如下圖</p>
+        <p class="h6 my-2">不過僅會呈現出使用者可以編輯的項目以及建案人員的帳號，且建案人員的帳號是不能修改的</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_037.png" />
+
+        <div class="h4 font-weight-bold mt-3">附件上傳</div>
+        <hr />
+        <p class="h6 my-2">附件上傳有限制只能上傳大小1MB以下的文件，且上傳成功後，會自動建立一則上傳附件的留言，如下圖</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_039.png" />
+
+        <div class="h4 font-weight-bold mt-3">刪除案件</div>
+        <hr />
+        <p class="h6 my-2">刪除的這個action，因為是比較危險的action，因此採用的是modal互動式頁面的方式，如下圖</p>
+        <p class="h6 my-2">使用者點擊[刪除]按鈕後，會先跳出另一個視窗畫面，詢問是否要刪除，於這個視窗按確定後，才會真的刪除此筆案件</p>
+        <p class="h6 my-2 text-danger">備註 : 此動作僅能以Admin帳號登入執行，謝謝</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_011.png" />
+
+        <div class="h4 font-weight-bold mt-3">關閉案件</div>
+        <hr />
+        <p class="h6 my-2">關閉案件的action，也是是比較危險的action，因為案件關閉後會禁止使用者對其進行編輯、留言、上傳附件，因此採用的是modal互動式頁面的方式，如下圖</p>
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_013.png" />
+        <img class="w-100 mt-2" src="~/Images/Introduction/JobRecordSystem_015.png" />
+
+        <div class="h4 font-weight-bold mt-3">Excel匯入批次建案</div>
+        <hr />
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_019.png" />
+
+        <div class="h4 font-weight-bold mt-3">Excel匯出案件內容</div>
+        <hr />
+        <img class="w-100" src="~/Images/Introduction/JobRecordSystem_021.png" />
+        <div class="h4 font-weight-bold mt-3">解說到此告一段落，謝謝</div>
+    </div>
+    <div class="col-3"></div>
+</div>

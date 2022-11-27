@@ -21,7 +21,6 @@ using NPOI.HSSF.Util;
 
 namespace Portfolio.Controllers
 {
-    [Authorize]
     public class JobRecordSystemController : Controller
     {
         #region 建構子
@@ -559,6 +558,7 @@ namespace Portfolio.Controllers
 
         #region 駐廠人員建案系統-附件上傳(UploadAttachment)
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UploadAttachment(int? id, List<IFormFile> files)
         {
             if (id == null)
@@ -646,6 +646,7 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐廠人員建案系統-匯出報表(ExportCaseReport)
+        [Authorize]
         public async Task<FileContentResult> ExportCaseReport(int? CaseId, int? CaseStatus, int? Location, int? ProductType, int? OSVersion, string Category, string OnsiteName, string UserName, string HostName)
         {
             var GetJobRecordsAllData = from j in _db.JobRecords select j;
@@ -996,6 +997,13 @@ namespace Portfolio.Controllers
         #endregion
 
         #region 駐廠人員建案系統-匯入報表關案(ImportCloseCase)
+        #endregion
+
+        #region 駐廠人員建案系統-系統架構介紹(Index)
+        public IActionResult Index()
+        {
+            return View();
+        }
         #endregion
     }
 }

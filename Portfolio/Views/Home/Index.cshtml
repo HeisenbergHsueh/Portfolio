@@ -5,7 +5,7 @@
 <div class="row p-3">
     <div class="col-3"></div>
     <div class="col-6">
-        <div class="h2">HeisenbergHsueh作品集網站-網站介紹</div>
+        <div class="h2">HeisenbergHsueh作品集網站</div>
         <hr />
         <div class="h4 font-weight-bold">登入系統</div>
         <ul>
@@ -13,41 +13,18 @@
             <li>帳號 : User、密碼 : 123456</li>
             <li>帳號 : Admin、密碼 : Admin</li>
         </ul>
-        <p class="h6 my-1 text-danger">備註 : 用來存放帳號的資料表每天早上1:00會自動還原成網站最初上架的資料表(就是下圖那張資料表)</p>
-        <p class="h6 my-1 text-danger">且輸入的密碼存放到DB時，皆已經經過MD5、SHA1的混合雜湊，因此，若想測試註冊功能，可以放心使用</p>
-        <img class="w-75" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_037.png" />
-        <div class="h4 font-weight-bold mt-2">連接SQL server</div>
+        <div class="h4 font-weight-bold">架構說明 : <a asp-controller="LoginSystem" asp-action="Index">請點此</a></div>
         <hr />
-        <p class="h6 my-1">連接SQL server的連線字串是使用AES加密之後，要使用到的時候再進行解密，請看下圖</p>
-        <img class="w-75" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_033.png" />
-        <p class="h6 my-1">連線到DB之前，必須先將此加密字串還原成SQL連線字串才可以連線到DB，以此增加保密性</p>
-        <img class="w-75" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_035.png" />
-        <div class="h4 font-weight-bold mt-2">註冊</div>
+        <div class="h4 font-weight-bold">駐廠人員建案系統</div>
+        <ul>
+            請使用下列帳號登入進行瀏覽，謝謝
+            <li>帳號 : User、密碼 : 123456</li>
+            <li>帳號 : Admin、密碼 : Admin</li>
+        </ul>
+        <div class="h4 font-weight-bold">架構說明 : <a asp-controller="JobRecordSystem" asp-action="Index">請點此</a></div>
         <hr />
-        <img class="w-50" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_007.png" />
-        <p class="h6 my-1">註冊帳號的頁面已有使用jQuery檢查帳號是否已被註冊，請看下兩張圖</p>
-        <img class="w-50 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_009.png" />
-        <img class="w-50 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_011.png" />
-        <p class="h6 my-1">且註冊表單皆已經導入表單驗證功能，若有不符合驗證規則的情況發生時，會跳出相對應的警告，如下圖</p>
-        <img class="w-50 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_013.png" />
-        <p class="h6 my-1">輸入完註冊資料後，之後便會跳出請到信箱進行帳號驗證的信息，如下圖</p>
-        <p class="h6 my-1 text-danger">備註 : 若要測試註冊功能，還請填入確實可以收到信的信箱，謝謝</p>
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_021.png" />
-        <p class="h6 my-1">接著請user收到信之後，點擊驗證網址啟用帳號，如下圖</p>
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_017.png" />
-        <p class="h6 my-1">之後便會跳出驗證成功與否的訊息，如下圖</p>
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_023.png" />
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_019.png" />
-        <p class="h6 my-1">之後便可以登入開始使用帳號</p>
-        <div class="h4 font-weight-bold mt-2">帳號權限控管</div>
-        <hr />
-        <p class="h6 my-1">帳號以角色進行cookie的授權分類，依序分成User、Admin、IT</p>
-        <p class="h6 my-1">當使用對應角色的帳號則可以看到允許該角色看到的頁面，否則則會轉跳到禁止頁面，如下四張圖</p>
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_025.png" />
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_027.png" />
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_029.png" />
-        <img class="w-75 my-1" src="~/Images/Introduction/HeisenbergHsueh_Portfolio_Image_031.png" />
-        <div class="h4 font-weight-bold mt-2">登入系統的解說到此告一段落，謝謝</div>
+        <div class="h4 font-weight-bold">python工具開發-偵測防毒伺服器運行狀態</div>
+        <div class="h4 font-weight-bold">架構說明(GitHub連結) : <a href="https://github.com/HeisenbergHsueh/Python_AUCheck">請點此</a></div>
     </div>
     <div class="col-3"></div>
 </div>

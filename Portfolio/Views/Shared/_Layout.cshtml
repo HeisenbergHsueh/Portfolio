@@ -30,8 +30,15 @@
     ViewData["Website_en"] = Localizer["Website_en"];
 
     ViewData["Website_Profile"] = Localizer["Website_Profile"];
+    ViewData["Website_Index"] = Localizer["Website_Index"];
+
     ViewData["Website_LoginSystem"] = Localizer["Website_LoginSystem"];
     ViewData["Website_LoginSystem_Index"] = Localizer["Website_LoginSystem_Index"];
+    ViewData["Website_LoginSystem_Register"] = Localizer["Website_LoginSystem_Register"];
+    ViewData["Website_LoginSystem_UserView"] = Localizer["Website_LoginSystem_UserView"];
+    ViewData["Website_LoginSystem_AdminView"] = Localizer["Website_LoginSystem_AdminView"];
+    ViewData["Website_LoginSystem_MultipleView"] = Localizer["Website_LoginSystem_MultipleView"];
+    ViewData["Website_LoginSystem_ITView"] = Localizer["Website_LoginSystem_ITView"];
 
     ViewData["Website_JobRecordSystem"] = Localizer["Website_JobRecordSystem"];
     ViewData["Website_JobRecordSystem_Index"] = Localizer["Website_JobRecordSystem_Index"];
@@ -79,7 +86,7 @@
                         <a class="nav-link text-white" asp-controller="Home" asp-action="Profile">@ViewData["Website_Profile"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Home" asp-action="Index">首頁</a>
+                        <a class="nav-link text-white" asp-controller="Home" asp-action="Index">@ViewData["Website_Index"]</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
@@ -87,17 +94,16 @@
                         </a>
                         <div class="dropdown-menu m-0">
                             <a class="dropdown-item" asp-controller="LoginSystem" asp-action="Index">@ViewData["Website_LoginSystem_Index"]</a>
-                        </div>
-                        <div class="dropdown-menu m-0">
-                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="Register">註冊</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="UserPage">User才可看見</a>
+                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="Register">@ViewData["Website_LoginSystem_Register"]</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="AdministratorPage">Admin才可看見</a>
+                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="UserPage">@ViewData["Website_LoginSystem_UserView"]</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="MultipleRolePage">Admin、User皆可看見</a>
+                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="AdministratorPage">@ViewData["Website_LoginSystem_AdminView"]</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="IT_could_be_browser_Page">IT才可看見</a>
+                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="MultipleRolePage">@ViewData["Website_LoginSystem_MultipleView"]</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-controller="LoginSystem" asp-action="IT_could_be_browser_Page">@ViewData["Website_LoginSystem_ITView"]</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">

@@ -120,8 +120,11 @@
   <data name="Website_en" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="Website_Index" xml:space="preserve">
+    <value>首頁</value>
+  </data>
   <data name="Website_JobRecordSystem" xml:space="preserve">
-    <value>駐場人員建案系統</value>
+    <value>駐廠人員建案系統</value>
   </data>
   <data name="Website_JobRecordSystem_Index" xml:space="preserve">
     <value>建案系統首頁</value>
@@ -129,14 +132,29 @@
   <data name="Website_LoginSystem" xml:space="preserve">
     <value>登入系統</value>
   </data>
+  <data name="Website_LoginSystem_AdminView" xml:space="preserve">
+    <value>Admin才可看見</value>
+  </data>
   <data name="Website_LoginSystem_Index" xml:space="preserve">
     <value>登入系統首頁</value>
+  </data>
+  <data name="Website_LoginSystem_ITView" xml:space="preserve">
+    <value>IT才可看見</value>
   </data>
   <data name="Website_LoginSystem_Login" xml:space="preserve">
     <value>登入</value>
   </data>
   <data name="Website_LoginSystem_Logout" xml:space="preserve">
     <value>登出</value>
+  </data>
+  <data name="Website_LoginSystem_MultipleView" xml:space="preserve">
+    <value>Admin、User皆可見</value>
+  </data>
+  <data name="Website_LoginSystem_Register" xml:space="preserve">
+    <value>註冊</value>
+  </data>
+  <data name="Website_LoginSystem_UserView" xml:space="preserve">
+    <value>User才可看見</value>
   </data>
   <data name="Website_Profile" xml:space="preserve">
     <value>個人履歷</value>

@@ -120,6 +120,9 @@
   <data name="Website_en" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="Website_Index" xml:space="preserve">
+    <value>Index</value>
+  </data>
   <data name="Website_JobRecordSystem" xml:space="preserve">
     <value>JobRecord System</value>
   </data>
@@ -129,14 +132,29 @@
   <data name="Website_LoginSystem" xml:space="preserve">
     <value>Login System</value>
   </data>
+  <data name="Website_LoginSystem_AdminView" xml:space="preserve">
+    <value>Admin View</value>
+  </data>
   <data name="Website_LoginSystem_Index" xml:space="preserve">
     <value>Login System Index</value>
+  </data>
+  <data name="Website_LoginSystem_ITView" xml:space="preserve">
+    <value>IT View</value>
   </data>
   <data name="Website_LoginSystem_Login" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="Website_LoginSystem_Logout" xml:space="preserve">
     <value>Logout</value>
+  </data>
+  <data name="Website_LoginSystem_MultipleView" xml:space="preserve">
+    <value>Admin、User View</value>
+  </data>
+  <data name="Website_LoginSystem_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Website_LoginSystem_UserView" xml:space="preserve">
+    <value>User View</value>
   </data>
   <data name="Website_Profile" xml:space="preserve">
     <value>Profile</value>
