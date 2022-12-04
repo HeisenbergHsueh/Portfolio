@@ -1,0 +1,32 @@
+﻿@model BarcodeModel
+
+@{
+
+}
+
+<div class="row mt-5">
+    <div class="col-4"></div>
+    <div class="col-4">
+        <div class="h4">功能實作-Barcode條碼產生</div>
+        <hr />
+        <form asp-controller="Home" asp-action="GenerateBarcodeEncode" method="post">
+            <div class="form-group">
+                <input class="form-control" type="text" name="InputData" />
+            </div>
+            <button type="submit">產生條碼</button>
+        </form>
+
+        <br />
+
+        @if (Model != null)
+        {
+            <div class="h6">您輸入的字串為 : @ViewData["InputData"]</div>
+
+            <div class="h6">轉換成的barcode條碼如下 : </div>
+            <br />
+            <img src="@Model.BarcodeEncode" />
+        }
+    </div>
+    <div class="col-4"></div>
+</div>
+

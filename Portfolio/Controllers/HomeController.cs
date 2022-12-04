@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Portfolio.Models;
+
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http.Extensions;
 
 //hash加密
 using Portfolio.Security;
@@ -16,8 +19,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Portfolio.Services;
 
-//
-using Microsoft.AspNetCore.Http.Extensions;
+//Barcode
+using BarcodeLib;
+using System.Drawing;
+using System.Drawing.Imaging;
+
 
 namespace Portfolio.Controllers
 {
@@ -69,6 +75,32 @@ namespace Portfolio.Controllers
             #endregion
 
             return View();
+        }
+
+        public IActionResult GenerateBarcodeEncode()
+        {
+            return View();
+        }
+
+        [HttpPost, ActionName(nameof(GenerateBarcodeEncode))]
+        public IActionResult GenerateBarcodeEncodeConfirm(string InputData)
+        {
+            MemoryStream MS;
+
+            using (MS = new MemoryStream())
+            {
+                Barcode barcode = new Barcode();
+
+                Image image = barcode.Encode(TYPE.CODE128, InputData, Color.Black, Color.White, 250, 100);
+                image.Save(MS, ImageFormat.Png);
+            }
+
+            BarcodeModel model = new BarcodeModel();
+            model.BarcodeEncode = $@"data:image/png;base64,{Convert.ToBase64String(MS.ToArray())}";
+
+            ViewData["InputData"] = InputData;
+
+            return View(model);
         }
 
         public IActionResult Privacy()

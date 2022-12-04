@@ -205,7 +205,8 @@ namespace Portfolio
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();   //設定使用靜態檔案
+            //設定使用靜態檔案
+            app.UseStaticFiles();   
             app.UseRouting();
 
             #region cookie驗證
